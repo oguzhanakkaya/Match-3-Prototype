@@ -11,12 +11,22 @@ using UnityEngine.Playables;
 
 public static class GridOperations
 {
-    public static async UniTask ClearTileAsync(IGridNode grid)
+    public static void ClearMatchedItem(List<MatchedItems<IGridNode>> matchedItemsList,GameBoard _gameBoard)
+    {
+        foreach (var item in matchedItemsList)
+        {
+            foreach (var item2 in item.matchedItems)
+            {
+                ClearTile(_gameBoard[item2]);
+            }
+        }
+    }
+    private static async UniTask ClearTileAsync(IGridNode grid)
     {
         grid.Item.Hide();
         grid.Clear();
     }
-    public static void ClearTile(IGridNode grid)
+    private static void ClearTile(IGridNode grid)
     {
         grid.Item.Hide();
         grid.Clear();

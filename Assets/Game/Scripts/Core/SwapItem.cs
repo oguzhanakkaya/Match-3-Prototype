@@ -6,19 +6,20 @@ using Match3System.Core.Interfaces;
 using Match3System.Core.Models;
 using UnityEngine.UIElements;
 
-public class SwapItem
+public static class SwapItem
 {
     private const float SwapDuration = .2f;
 
 
-    public async UniTask SwapItemsAsync(GridPoint position1, GridPoint position2,GameBoard gameBoard)
+    public static async UniTask SwapItemsAsync(GridPoint position1, GridPoint position2,GameBoard gameBoard)
     {
         await SwapGameBoardItemsAsync(position1, position2,gameBoard);
 
-        if (true)
-        {
+        if (MatchSolver.GetMatches(gameBoard).Count > 0)
+            GridOperations.ClearMatchedItem(MatchSolver.GetMatches(gameBoard),gameBoard);
+        else
             await SwapGameBoardItemsAsync(position1, position2, gameBoard);
-        }
+
 
 
        /* if (IsSolved(position1, position2, out var solvedData))
@@ -32,8 +33,14 @@ public class SwapItem
         }
        */
     }
+  /*  protected bool IsSolved(GridPosition position1, GridPosition position2, out SolvedData<TGridSlot> solvedData)
+    {
+        solvedData = _gameBoardSolver.Solve(GameBoard, position1, position2);
+        return solvedData.SolvedSequences.Count > 0;
+    }
+    */
 
-    private async UniTask SwapGameBoardItemsAsync(GridPoint position1, GridPoint position2,GameBoard gameBoard)
+    private static async UniTask SwapGameBoardItemsAsync(GridPoint position1, GridPoint position2,GameBoard gameBoard)
     {
         var gridSlot1 = gameBoard[position1];
         var gridSlot2 = gameBoard[position2];
@@ -41,7 +48,7 @@ public class SwapItem
         await StartSwapItemsAnim(gridSlot1, gridSlot2);
     }
 
-    private async UniTask StartSwapItemsAnim(IGridNode gridSlot1, IGridNode gridSlot2)
+    private static async UniTask StartSwapItemsAnim(IGridNode gridSlot1, IGridNode gridSlot2)
     {
         var item1 = gridSlot1.Item;
         var item2 = gridSlot2.Item;

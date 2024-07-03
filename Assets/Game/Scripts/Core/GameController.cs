@@ -42,23 +42,25 @@ namespace Game.Scripts.Core
         private AudioManager _audioManager;
 
         public GameBoard _gameBoard;
-        private SwapItem swapItem;
         private GameData _gameData;
 
         public FillClass fillClass;
 
         public LevelData levelData;
 
+        private GridPoint firstGridPoint;
+        private bool canDrag;
+
         private void Awake()
         {
             _inputSystem.PointerUp += OnPointerUp;
-          //  _inputSystem.PointerDrag += OnPointerDrag;
+            _inputSystem.PointerDown += OnPointerDown;
         }
 
         private void OnDestroy()
         {
             _inputSystem.PointerUp -= OnPointerUp;
-          //  _inputSystem.PointerDrag -= OnPointerDrag;
+            _inputSystem.PointerDown -= OnPointerDown;
         }
 
         public void Init()
@@ -170,26 +172,45 @@ namespace Game.Scripts.Core
             moveCount--;
             SetMoveCountText();
         }
+        private async void OnPointerDown(object sender, PointerEventArgs e)
+        {
+            if (_gameBoard.IsPointerOnGrid(e.WorldPosition, out GridPoint point))
+            {
+                firstGridPoint = point;
+                canDrag = true;
+            }
+        }
         private async void OnPointerUp(object sender, PointerEventArgs e)
         {
             if (_gameBoard.IsPointerOnGrid(e.WorldPosition, out GridPoint point))
             {
-                if (_gameData.CheckItemIsNonTouchable(_gameBoard[point].Item.ItemType))
-                    return;
 
-             /*   if (_gameBoard[point].Item.ItemType==ItemType.Rocket)
-                {
-                    RocketItem rocketItem = (RocketItem)_gameBoard[point].Item;
-                  //await rocketItem.RocketSequence(point,_gameBoard,this);
-                    FillSequence();
-                    return;
-                }*/
-             
-                var matchedList=MatchDetector.GetMatchedItems(_gameBoard[new GridPoint(point.RowIndex, point.ColumnIndex)],_gameBoard);
 
-                if (matchedList==null || matchedList.Count < 2)
-                    return;
+                /*  if (canDrag && !IsSameSlot(point) && !IsDiagonalSlot(point))
+                  {
+                      await SwapItem.SwapItemsAsync(firstGridPoint, point, _gameBoard);
+                  }*/
+                await SwapItem.SwapItemsAsync(firstGridPoint, point, _gameBoard);
+                canDrag = false;
+                fillClass.Fill(_gameBoard, 1, levelData);
+                return;
 
+              /*  if (_gameData.CheckItemIsNonTouchable(_gameBoard[point].Item.ItemType))
+                    return;
+              */
+                /*   if (_gameBoard[point].Item.ItemType==ItemType.Rocket)
+                   {
+                       RocketItem rocketItem = (RocketItem)_gameBoard[point].Item;
+                     //await rocketItem.RocketSequence(point,_gameBoard,this);
+                       FillSequence();
+                       return;
+                   }*/
+
+             //   var matchedList = MatchDetector.GetMatchedItems(_gameBoard[new GridPoint(point.RowIndex, point.ColumnIndex)], _gameBoard);
+
+              /*  if (matchedList == null || matchedList.Count < 2)
+                    return;
+              */
                 DecreaseMoveCount();
                 await _gameBoard[point].Item.ItemClicked(_gameBoard, new GridPoint(point.RowIndex, point.ColumnIndex));
                 FillSequence();
@@ -197,7 +218,7 @@ namespace Game.Scripts.Core
                 // ClickSequence(matchedList,point);
 
             }
-             
+
         }
         public void StartParticle(IGridNode grid)
         {
@@ -205,7 +226,7 @@ namespace Game.Scripts.Core
         }
         private async void ClickSequence(IReadOnlyList<IGridNode> matchedList,GridPoint point)
         {
-            _audioManager.PlayAudio(Audios.Explode);
+          /*  _audioManager.PlayAudio(Audios.Explode);
 
             List<UniTask> tasks = new List<UniTask>();
 
@@ -214,7 +235,7 @@ namespace Game.Scripts.Core
                 StartParticle(item);
                 tasks.Add(GridOperations.ClearTileAsync(item));
             }
-            await UniTask.WhenAll(tasks);
+            await UniTask.WhenAll(tasks);*/
 
           /*  if (matchedList.Count >= 5) // Check Can Create Rocket
             {
@@ -232,7 +253,22 @@ namespace Game.Scripts.Core
             await fillClass.Fill(_gameBoard, 1, levelData);
         }
 
-      
+        private bool IsSameSlot(GridPoint slotPosition)
+        {
+            return firstGridPoint.Equals(slotPosition);
+        }
+
+        private bool IsDiagonalSlot(GridPoint slotPosition)
+        {
+            var isSideSlot = slotPosition.Equals(firstGridPoint + GridPoint.Up) ||
+                             slotPosition.Equals(firstGridPoint + GridPoint.Down) ||
+                             slotPosition.Equals(firstGridPoint + GridPoint.Left) ||
+                             slotPosition.Equals(firstGridPoint + GridPoint.Right);
+
+            return isSideSlot == false;
+        }
+
+
 
     }
 }

@@ -63,21 +63,21 @@ namespace Game.Scripts.Core
 
         public async UniTask ItemClicked(GameBoard board,GridPoint point)
         {
-            var matchedList = MatchDetector.GetMatchedItems(board[point], board);
+          //  var matchedList = MatchDetector.GetMatchedItems(board[point], board);
 
-            if (matchedList == null || matchedList.Count < 2)
-                return;
+           /* if (matchedList == null || matchedList.Count < 2)
+                return;*/
 
             // _audioManager.PlayAudio(Audios.Explode);
 
 
             List<UniTask> tasks = new List<UniTask>();
 
-            foreach (var item in matchedList)
+         /*   foreach (var item in matchedList)
             {
               //  StartParticle(item);
                 tasks.Add(GridOperations.ClearTileAsync(item));
-            }
+            }*/
             await UniTask.WhenAll(tasks);
 
          /*   if (matchedList.Count >= 5) // Check Can Create Rocket

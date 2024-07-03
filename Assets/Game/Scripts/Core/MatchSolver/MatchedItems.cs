@@ -1,16 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
+using Game.Scripts.Core.Interfaces;
 using Match3System.Core.Interfaces;
+using Match3System.Core.Models;
 using UnityEngine;
 
 public class MatchedItems<TGridSlot> where TGridSlot : IGridNode
 {
-    public MatchedItems(ItemType itemType, IReadOnlyList<TGridSlot> matchedGridSlot)
+    public MatchedItems(ItemType itemType, List<GridPoint> matchedGridPoint)
     {
         this.itemType = itemType;
-        this.matchedGridSlot = matchedGridSlot;
+        this.matchedItems = matchedGridPoint;
     }
 
     public ItemType itemType { get; }
-    public IReadOnlyList<TGridSlot> matchedGridSlot { get; }
+    public List<GridPoint> matchedItems { get; set; }
 }
