@@ -20,6 +20,7 @@ public static class GridOperations
                 ClearTile(_gameBoard[item2]);
             }
         }
+
     }
     private static async UniTask ClearTileAsync(IGridNode grid)
     {

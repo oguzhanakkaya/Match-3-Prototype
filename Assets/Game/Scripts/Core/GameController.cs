@@ -190,9 +190,11 @@ namespace Game.Scripts.Core
                   {
                       await SwapItem.SwapItemsAsync(firstGridPoint, point, _gameBoard);
                   }*/
-                await SwapItem.SwapItemsAsync(firstGridPoint, point, _gameBoard);
+                await SwapItem.SwapItemsAsync(firstGridPoint, point, _gameBoard);        
+                await ItemFallDown.FallDown(_gameBoard, this, .1f);
+                await fillClass.Fill(_gameBoard, 1, levelData);
+
                 canDrag = false;
-                fillClass.Fill(_gameBoard, 1, levelData);
                 return;
 
               /*  if (_gameData.CheckItemIsNonTouchable(_gameBoard[point].Item.ItemType))

@@ -16,7 +16,9 @@ public static class SwapItem
         await SwapGameBoardItemsAsync(position1, position2,gameBoard);
 
         if (MatchSolver.GetMatches(gameBoard).Count > 0)
-            GridOperations.ClearMatchedItem(MatchSolver.GetMatches(gameBoard),gameBoard);
+        {
+            GridOperations.ClearMatchedItem(MatchSolver.GetMatches(gameBoard), gameBoard);
+        }
         else
             await SwapGameBoardItemsAsync(position1, position2, gameBoard);
 
