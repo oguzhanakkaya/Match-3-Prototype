@@ -14,6 +14,9 @@ public static class ItemFallDown
     public static async UniTask FallDown(GameBoard _gameBoard,GameController gameController,float delay=0)
     {
         await UniTask.Delay(TimeSpan.FromSeconds(delay));
+
+        List<UniTask> tasks = new List<UniTask>();
+
         for (var rowIndex = _gameBoard.RowCount - 1; rowIndex >= 0; rowIndex--)
         {
              for (var columnIndex = _gameBoard.ColumnCount - 1; columnIndex >= 0; columnIndex--)
@@ -25,13 +28,14 @@ public static class ItemFallDown
                     if (item == null)
                         continue;
 
-                    ItemMovement.MoveItem(item, gameController.GetWorldPosition(gridPoint.RowIndex, gridPoint.ColumnIndex));
+                    tasks.Add(ItemMovement.MoveItem(item, gameController.GetWorldPosition(gridPoint.RowIndex, gridPoint.ColumnIndex)));
 
                     _gameBoard[new GridPoint(rowIndex, columnIndex)].Clear();
                     _gameBoard[new GridPoint(gridPoint.RowIndex, gridPoint.ColumnIndex)].SetItem(item);
                  }
              }
         }
+        await UniTask.WhenAll(tasks);
         await UniTask.DelayFrame(1);
     }
     public static bool CanMoveDown(GridPoint point, out GridPoint gridPosition,GameBoard _gameBoard)

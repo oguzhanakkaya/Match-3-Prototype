@@ -55,6 +55,8 @@ public class FillClass
     {
         await UniTask.Delay(TimeSpan.FromSeconds(.1f));
 
+        List<UniTask> tasks = new List<UniTask>();
+
         for (var columnIndex = gameBoard.ColumnCount-1; columnIndex >= 0; columnIndex--)
         {
             for (var rowIndex = gameBoard.RowCount-1; rowIndex >= 0; rowIndex--)
@@ -69,11 +71,12 @@ public class FillClass
                 item.SetPosition(GetWorldPosition(itemGeneratorPosition.RowIndex-2,itemGeneratorPosition.ColumnIndex));
                 ShowItem(item);
 
-                ItemMovement.MoveItem(item,GetWorldPosition(itemGeneratorPosition.RowIndex,itemGeneratorPosition.ColumnIndex));
+                tasks.Add(ItemMovement.MoveItem(item,GetWorldPosition(itemGeneratorPosition.RowIndex,itemGeneratorPosition.ColumnIndex)));
 
                 gridSlot.SetItem(item);
             }
         }
+        await UniTask.WhenAll(tasks);
     }
     public void FillOneObject(GameBoard gameBoard, GridPoint point,IItem item)
     {

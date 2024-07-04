@@ -10,17 +10,8 @@ using UnityEngine;
 
 public static class ItemMovement 
 {
-    public static async UniTask MoveItemAsyncToGoal(IItem item, Vector3 targetPos, float delay = .1f)
+    public static async UniTask MoveItem(IItem item, Vector3 targetPos, float delay = .1f)
     {
-        await item.Transform.DOMove(targetPos, delay).SetEase(Ease.Flash);
+        await item.Transform.DOMove(targetPos, .25f).SetEase(Ease.Flash);
     }
-    public static void MoveItem(IItem item, Vector3 targetPos,float delay=.1f)
-    {
-        item.Transform.DOMove(targetPos, delay).SetEase(Ease.Flash);
-    }
-    public static async UniTask MoveObject(GameObject item, Vector3 targetPos, float delay = .1f)
-    {
-        await item.transform.DOMove(targetPos, delay).SetEase(Ease.Flash);
-    }
-
 }
