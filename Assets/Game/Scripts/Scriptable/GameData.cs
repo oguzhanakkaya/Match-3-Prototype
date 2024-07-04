@@ -17,12 +17,10 @@ public class SpriteData
         this.particleColor = particleColor;
     }
 }
-
 [CreateAssetMenu(fileName = "GameData", menuName = "Data/GameData")]
 public class GameData : ScriptableObject
 {
     public SpriteData[] spriteDatas;
-
     public Sprite GetSprite(ItemType itemType)
     {
         foreach (var item in spriteDatas)

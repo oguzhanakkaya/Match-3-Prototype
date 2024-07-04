@@ -14,5 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rowIndex: 8
   columnIndex: 8
+  moveCount: 15
+  destroyItemCount: 100
   levelItems: 00000000040000000300000001000000
-  moveCount: 50
+  spawners: 0101010101010101

@@ -9,7 +9,6 @@ using UnityEngine;
 public static class MatchSolver
 {
     private static List<MatchedItems<IGridNode>> matchedItems = new List<MatchedItems<IGridNode>>();
-
     public static List<MatchedItems<IGridNode>> GetMatches(GameBoard _gameBoard, List<LineDetectors> lines)
     {
         matchedItems.Clear();
@@ -22,7 +21,6 @@ public static class MatchSolver
 
     private static void SetMatchesWithDirections(GameBoard _gameBoard, GridPoint[] _lineDirections)
     {
-
         for (var rowIndex = 0; rowIndex < _gameBoard.RowCount; rowIndex++)
         {
             for (var columnIndex = 0; columnIndex < _gameBoard.ColumnCount; columnIndex++)
@@ -34,7 +32,7 @@ public static class MatchSolver
 
                 if (CheckMatch(point,_gameBoard, _lineDirections))
                 {
-                     List<GridPoint> matchedGridPoint=new List<GridPoint>();
+                    List<GridPoint> matchedGridPoint=new List<GridPoint>();
 
                     matchedGridPoint.Add(point);
 
@@ -42,9 +40,7 @@ public static class MatchSolver
                     {
                         matchedGridPoint.Add(point+item);
                     }
-
                     matchedItems.Add(new MatchedItems<IGridNode>(_gameBoard[point].Item.ItemType, matchedGridPoint));
-
                 }
             }
         }
@@ -61,7 +57,7 @@ public static class MatchSolver
     {
         foreach (var item in _lineDirections)
         {
-            if (!IsPointOnGrid(point + item, _gameBoard))
+            if (!IsPointOnGrid(point + item, _gameBoard) || _gameBoard[point+item].Item==null || _gameBoard[point].Item == null)
                 return false;
         }
         return true;

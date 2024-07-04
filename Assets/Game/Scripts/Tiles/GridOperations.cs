@@ -12,9 +12,7 @@ using UnityEngine.Playables;
 
 public static class GridOperations
 {
-
     private const float SwapDuration = .2f;
-
     public static async UniTask ClearSequence(GameBoard gameBoard, GameController gameController)
     {
         var matches = MatchSolver.GetMatches(gameBoard, GetLineDetectors());
@@ -37,7 +35,6 @@ public static class GridOperations
         else
             await SwapGameBoardItemsAsync(position1, position2, gameBoard);
     }
-
     private static async UniTask SwapGameBoardItemsAsync(GridPoint position1, GridPoint position2, GameBoard gameBoard)
     {
         var gridSlot1 = gameBoard[position1];
@@ -45,7 +42,6 @@ public static class GridOperations
 
         await StartSwapItemsAnim(gridSlot1, gridSlot2);
     }
-
     private static async UniTask StartSwapItemsAnim(IGridNode gridSlot1, IGridNode gridSlot2)
     {
         var item1 = gridSlot1.Item;
@@ -76,7 +72,6 @@ public static class GridOperations
                 ClearTile(_gameBoard[item2],gameController);
             }
         }
-
     }
     private static void ClearTile(IGridNode grid, GameController gameController)
     {
@@ -84,6 +79,8 @@ public static class GridOperations
             return;
 
         gameController.StartParticle(grid);
+        gameController.DecreaseItemDestroyCount();
+
         grid.Item.Hide();
         grid.Clear();
     }
@@ -93,6 +90,5 @@ public static class GridOperations
         LineDetectors verticalDetector = new LineDetectors(new GridPoint[]{GridPoint.Up,GridPoint.Down});
 
         return  new List<LineDetectors>() {horizontalDetector,verticalDetector};
-
     }
 }

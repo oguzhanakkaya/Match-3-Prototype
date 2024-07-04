@@ -16,21 +16,18 @@ namespace Game.Scripts.Core
         [SerializeField] private PoolManager _poolManager;
         [SerializeField] private GameController _gameController;
         [SerializeField] private GameData gameData;
-
         public override void Initialize()
         {
             base.Initialize();
             
             Register<IGameView>(_gameView);
             Register<IInputSystem>(_inputSystem);
-          //  Register<AudioManager>(_audioManager);
 
             InitPooling();
             
             CreateGenerator();
             CreateParticleGenerator();
-            CreateRocketGenerator();
-            
+
             Register(GetGameSession());
             Register(_gameController);
             Register<IGameBoardDataProvider<IGridNode>>(_gameController);
@@ -43,7 +40,6 @@ namespace Game.Scripts.Core
             _poolManager.Init();
             Register<IPoolManager>(_poolManager);
         }
-
         private GameSession GetGameSession()
         {
             return new GameSession(this);
@@ -56,19 +52,12 @@ namespace Game.Scripts.Core
         {
             return gameData;
         }
-
         private void CreateGenerator()
         {
             var itemPool = _poolManager.GetPool<Item>("item_basic");
             var nodeItemGenerator = new NodeItemGenerator(itemPool);
             nodeItemGenerator.SetGameData(gameData);
             Register<NodeItemGenerator>(nodeItemGenerator);
-        }
-        private void CreateRocketGenerator()
-        {
-          /*  var itemPool = _poolManager.GetPool<RocketItem>("item_rocket");
-            var rocketItemGenerator = new RocketItemGenerator(itemPool);
-            Register<RocketItemGenerator>(rocketItemGenerator);*/
         }
         private void CreateParticleGenerator()
         {

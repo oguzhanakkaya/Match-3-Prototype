@@ -8,10 +8,8 @@ namespace PoolSystem.Core
     public class Pool<T> : IPool<T> where T : Component, IPoolObject<T>
     {
         public string PrefabId => Prefab.PrefabId;
-
         public T Prefab { get; private set; }
         public Transform Parent { get; private set; }
-
         private HashSet<T> _activeItems;
         private Queue<T> _inactiveItems;
 
@@ -38,7 +36,6 @@ namespace PoolSystem.Core
             _inactiveItems.Enqueue(item);
             return item;
         }
-
         public T Spawn()
         {
             if (_inactiveItems.TryDequeue(out var item))
@@ -60,7 +57,6 @@ namespace PoolSystem.Core
                 return item;
             }
         }
-
         public void Recycle(T item)
         {
             item.Hide();
@@ -70,12 +66,10 @@ namespace PoolSystem.Core
             item.TryGetComponent(out IRecycleCallbackReceiver recycleCallbackReceiver);
             recycleCallbackReceiver?.OnRecycled();
         }
-
         public void SetParent(Transform parent)
         {
             Parent = parent;
         }
-
         public void SetPrefab<T1>(T1 prefab) where T1 : Component
         {
             if (prefab is T p)
@@ -83,7 +77,6 @@ namespace PoolSystem.Core
                 Prefab = p;
             }
         }
-
         public void RecycleAll()
         {
             while (_activeItems.Count > 0)
