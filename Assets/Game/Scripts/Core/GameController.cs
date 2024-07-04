@@ -7,15 +7,9 @@ using Game.Scripts.Tiles;
 using Match3System.Core.Interfaces;
 using Match3System.Core.Models;
 using PoolSystem;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
 using TMPro;
-using static UnityEditor.Progress;
-using System.Drawing;
-using Game.Scripts.UI.Interfaces;
 using Game.Scripts.UI;
-using PoolSystem.Core;
 
 namespace Game.Scripts.Core
 {

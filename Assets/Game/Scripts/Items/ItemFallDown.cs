@@ -1,13 +1,9 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
 using Cysharp.Threading.Tasks;
 using Game.Scripts.Core;
 using Game.Scripts.Core.Interfaces;
 using Match3System.Core.Models;
-using UnityEngine;
-using static UnityEditor.Progress;
 
 public static class ItemFallDown
 {
@@ -23,7 +19,7 @@ public static class ItemFallDown
              {
                 if (CanMoveDown(new GridPoint(rowIndex, columnIndex), out GridPoint gridPoint,_gameBoard))
                 {
-                    var item = _gameBoard[new GridPoint(rowIndex, columnIndex)].Item;
+                    IItem item = _gameBoard[new GridPoint(rowIndex, columnIndex)].Item;
 
                     if (item == null)
                         continue;
@@ -57,7 +53,7 @@ public static class ItemFallDown
     }
     private static bool CanDropDown(GameBoard gameBoard,GridPoint point)
     {
-        var gridPosition = point + GridPoint.Down;
+        GridPoint gridPosition = point + GridPoint.Down;
 
         return gameBoard.IsPositionOnGrid(gridPosition) &&
             !gameBoard[new GridPoint(gridPosition.RowIndex, gridPosition.ColumnIndex)].HasItem;

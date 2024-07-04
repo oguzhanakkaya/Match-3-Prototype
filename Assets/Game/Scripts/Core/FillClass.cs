@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Game.Scripts.Core;
 using Game.Scripts.Core.Interfaces;
+using Match3System.Core.Interfaces;
 using Match3System.Core.Models;
 using PoolSystem;
 using UnityEngine;
@@ -23,11 +24,11 @@ public class FillClass
     {
         var itemsToShow = new List<Item>();
 
-        for (var rowIndex = 0; rowIndex < gameBoard.RowCount; rowIndex++)
+        for (int rowIndex = 0; rowIndex < gameBoard.RowCount; rowIndex++)
         {
-            for (var columnIndex = 0; columnIndex < gameBoard.ColumnCount; columnIndex++)
+            for (int columnIndex = 0; columnIndex < gameBoard.ColumnCount; columnIndex++)
             {
-                var gridNode = gameBoard[new GridPoint(rowIndex,columnIndex)];
+                IGridNode gridNode = gameBoard[new GridPoint(rowIndex,columnIndex)];
 
                 if (gridNode.HasItem != false)
                     continue;
@@ -57,13 +58,13 @@ public class FillClass
         {
             for (var rowIndex = gameBoard.RowCount-1; rowIndex >= 0; rowIndex--)
             {
-                var gridSlot = gameBoard[new GridPoint(rowIndex, columnIndex)];
+                IGridNode gridSlot = gameBoard[new GridPoint(rowIndex, columnIndex)];
 
                 if (gridSlot.HasItem || !levelData.spawners[columnIndex])
                     continue;
 
-                var item = GetItemFromPool(levelData);
-                var itemGeneratorPosition = GetItemGeneratorPosition(gameBoard, rowIndex, columnIndex);
+                Item item = GetItemFromPool(levelData);
+                GridPoint itemGeneratorPosition = GetItemGeneratorPosition(gameBoard, rowIndex, columnIndex);
                 item.SetPosition(GetWorldPosition(itemGeneratorPosition.RowIndex-2,itemGeneratorPosition.ColumnIndex));
                 ShowItem(item);
 
