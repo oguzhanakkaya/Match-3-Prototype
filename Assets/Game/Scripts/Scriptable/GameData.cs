@@ -23,14 +23,6 @@ public class GameData : ScriptableObject
 {
     public SpriteData[] spriteDatas;
 
-
-    public List<ItemType> NonTouchableItemTypes;
-
-
-    public bool CheckItemIsNonTouchable(ItemType type)
-    {
-        return NonTouchableItemTypes.Contains(type);
-    }
     public Sprite GetSprite(ItemType itemType)
     {
         foreach (var item in spriteDatas)

@@ -39,7 +39,6 @@ namespace Game.Scripts.Core
         private NodeItemGenerator _itemGenerator;
         private ParticleGenerator _particleGenerator;
         private IPool<BasicTile> _tilePool;
-        private AudioManager _audioManager;
 
         public GameBoard _gameBoard;
         private GameData _gameData;
@@ -69,7 +68,6 @@ namespace Game.Scripts.Core
             _poolManager = _sceneContext1.Resolve<IPoolManager>();
             _itemGenerator = _sceneContext1.Resolve<NodeItemGenerator>();
             _particleGenerator = _sceneContext1.Resolve<ParticleGenerator>();
-          //  _audioManager = _sceneContext1.Resolve<AudioManager>();
             _tilePool = _poolManager.GetPool<BasicTile>("tile_basic");
             _gameData = _sceneContext1.GetGameData();
 
@@ -85,7 +83,7 @@ namespace Game.Scripts.Core
             var itemsPoolCapacity = rowCount * columnCount + Mathf.Max(rowCount, columnCount) * 2;
 
             _itemGenerator.CreateItems(itemsPoolCapacity);
-          //  _particleGenerator.CreateItems(itemsPoolCapacity);
+            _particleGenerator.CreateItems(itemsPoolCapacity);
 
             _gameBoard = new GameBoard();
             _gameBoard.SetGridSlots(_gameBoardNodes, GetOriginPosition(rowCount,columnCount),_tileSize);

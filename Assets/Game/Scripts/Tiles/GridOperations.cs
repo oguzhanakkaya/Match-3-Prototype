@@ -18,9 +18,10 @@ public static class GridOperations
     public static async UniTask ClearSequence(GameBoard gameBoard, GameController gameController)
     {
         var matches = MatchSolver.GetMatches(gameBoard, GetLineDetectors());
+
         if (matches.Count > 0)
         {
-            GridOperations.ClearMatchedItem(matches, gameBoard);
+            ClearMatchedItem(matches, gameBoard,gameController);
             await gameController.FillSequence();
             await ClearSequence(gameBoard, gameController);
         }
@@ -66,23 +67,23 @@ public static class GridOperations
         gridSlot1.SetItem(item2);
         gridSlot2.SetItem(item1);
     }
-    public static void ClearMatchedItem(List<MatchedItems<IGridNode>> matchedItemsList,GameBoard _gameBoard)
+    public static void ClearMatchedItem(List<MatchedItems<IGridNode>> matchedItemsList,GameBoard _gameBoard, GameController gameController)
     {
         foreach (var item in matchedItemsList)
         {
             foreach (var item2 in item.matchedItems)
             {
-                ClearTile(_gameBoard[item2]);
+                ClearTile(_gameBoard[item2],gameController);
             }
         }
 
     }
-    private static void ClearTile(IGridNode grid)
+    private static void ClearTile(IGridNode grid, GameController gameController)
     {
         if (grid.Item == null)
             return;
 
-
+        gameController.StartParticle(grid);
         grid.Item.Hide();
         grid.Clear();
     }
