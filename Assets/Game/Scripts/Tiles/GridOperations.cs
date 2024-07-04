@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using Game.Scripts.Core;
 using Game.Scripts.Core.Interfaces;
 using Match3System.Core.Interfaces;
@@ -11,6 +12,59 @@ using UnityEngine.Playables;
 
 public static class GridOperations
 {
+
+    private const float SwapDuration = .2f;
+
+    public static async UniTask ClearSequence(GameBoard gameBoard, GameController gameController)
+    {
+        if (MatchSolver.GetMatches(gameBoard).Count > 0)
+        {
+            GridOperations.ClearMatchedItem(MatchSolver.GetMatches(gameBoard), gameBoard);
+            await gameController.FillSequence();
+            await ClearSequence(gameBoard, gameController);
+        }
+    }
+    public static async UniTask SwapItemsAsync(GridPoint position1, GridPoint position2, GameBoard gameBoard, GameController gameController)
+    {
+        await SwapGameBoardItemsAsync(position1, position2, gameBoard);
+
+        if (MatchSolver.GetMatches(gameBoard).Count > 0)
+        {
+            await ClearSequence(gameBoard, gameController);
+        }
+        else
+            await SwapGameBoardItemsAsync(position1, position2, gameBoard);
+    }
+
+    private static async UniTask SwapGameBoardItemsAsync(GridPoint position1, GridPoint position2, GameBoard gameBoard)
+    {
+        var gridSlot1 = gameBoard[position1];
+        var gridSlot2 = gameBoard[position2];
+
+        await StartSwapItemsAnim(gridSlot1, gridSlot2);
+    }
+
+    private static async UniTask StartSwapItemsAnim(IGridNode gridSlot1, IGridNode gridSlot2)
+    {
+        var item1 = gridSlot1.Item;
+        var item2 = gridSlot2.Item;
+
+        var item1WorldPosition = item1.GetPosition();
+        var item2WorldPosition = item2.GetPosition();
+
+        var sequence = DOTween.Sequence();
+
+        await sequence
+           .Join(item1.Transform.DOMove(item2WorldPosition, SwapDuration))
+           .Join(item2.Transform.DOMove(item1WorldPosition, SwapDuration))
+           .SetEase(Ease.Flash);
+
+        item1.SetPosition(item2WorldPosition);
+        item2.SetPosition(item1WorldPosition);
+
+        gridSlot1.SetItem(item2);
+        gridSlot2.SetItem(item1);
+    }
     public static void ClearMatchedItem(List<MatchedItems<IGridNode>> matchedItemsList,GameBoard _gameBoard)
     {
         foreach (var item in matchedItemsList)
@@ -22,13 +76,12 @@ public static class GridOperations
         }
 
     }
-    private static async UniTask ClearTileAsync(IGridNode grid)
-    {
-        grid.Item.Hide();
-        grid.Clear();
-    }
     private static void ClearTile(IGridNode grid)
     {
+        if (grid.Item == null)
+            return;
+
+
         grid.Item.Hide();
         grid.Clear();
     }

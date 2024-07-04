@@ -32,7 +32,7 @@ namespace Game.Scripts.Core
         private int _rowCount, _columnCount;
 
         private Vector3 _originPosition;
-        
+
         private GridNode[,] _gameBoardNodes;
 
         private IPoolManager _poolManager;
@@ -63,13 +63,13 @@ namespace Game.Scripts.Core
             _inputSystem.PointerDown -= OnPointerDown;
         }
 
-        public void Init()
+        public async void Init()
         {
             SceneContext _sceneContext1 = _sceneContext;
             _poolManager = _sceneContext1.Resolve<IPoolManager>();
             _itemGenerator = _sceneContext1.Resolve<NodeItemGenerator>();
             _particleGenerator = _sceneContext1.Resolve<ParticleGenerator>();
-            _audioManager = _sceneContext1.Resolve<AudioManager>();
+          //  _audioManager = _sceneContext1.Resolve<AudioManager>();
             _tilePool = _poolManager.GetPool<BasicTile>("tile_basic");
             _gameData = _sceneContext1.GetGameData();
 
@@ -98,6 +98,8 @@ namespace Game.Scripts.Core
 
             moveCount = levelData.moveCount;
             SetMoveCountText();
+
+            await GridOperations.ClearSequence(_gameBoard,this);
         }
         public IGridNode[,] GetGameBoardNodes(int level)
         {
@@ -184,74 +186,23 @@ namespace Game.Scripts.Core
         {
             if (_gameBoard.IsPointerOnGrid(e.WorldPosition, out GridPoint point))
             {
-
-
-                /*  if (canDrag && !IsSameSlot(point) && !IsDiagonalSlot(point))
-                  {
-                      await SwapItem.SwapItemsAsync(firstGridPoint, point, _gameBoard);
-                  }*/
-                await SwapItem.SwapItemsAsync(firstGridPoint, point, _gameBoard);        
-                await ItemFallDown.FallDown(_gameBoard, this, .1f);
-                await fillClass.Fill(_gameBoard, 1, levelData);
-
-                canDrag = false;
-                return;
-
-              /*  if (_gameData.CheckItemIsNonTouchable(_gameBoard[point].Item.ItemType))
+                if (!IsSameSlot(point) && IsDiagonalSlot(point))
                     return;
-              */
-                /*   if (_gameBoard[point].Item.ItemType==ItemType.Rocket)
-                   {
-                       RocketItem rocketItem = (RocketItem)_gameBoard[point].Item;
-                     //await rocketItem.RocketSequence(point,_gameBoard,this);
-                       FillSequence();
-                       return;
-                   }*/
-
-             //   var matchedList = MatchDetector.GetMatchedItems(_gameBoard[new GridPoint(point.RowIndex, point.ColumnIndex)], _gameBoard);
-
-              /*  if (matchedList == null || matchedList.Count < 2)
-                    return;
-              */
-                DecreaseMoveCount();
-                await _gameBoard[point].Item.ItemClicked(_gameBoard, new GridPoint(point.RowIndex, point.ColumnIndex));
-                FillSequence();
-
-                // ClickSequence(matchedList,point);
-
+                
+                await GridOperations.SwapItemsAsync(firstGridPoint, point, _gameBoard,this);        
+               
+               
             }
 
+            canDrag = false;
         }
         public void StartParticle(IGridNode grid)
         {
             _particleGenerator.GetItem().StartParticle(_gameData.GetParticleColorFromItemType(grid.Item.ItemType), grid.Item.GetPosition());
         }
-        private async void ClickSequence(IReadOnlyList<IGridNode> matchedList,GridPoint point)
-        {
-          /*  _audioManager.PlayAudio(Audios.Explode);
-
-            List<UniTask> tasks = new List<UniTask>();
-
-            foreach (var item in matchedList)
-            {
-                StartParticle(item);
-                tasks.Add(GridOperations.ClearTileAsync(item));
-            }
-            await UniTask.WhenAll(tasks);*/
-
-          /*  if (matchedList.Count >= 5) // Check Can Create Rocket
-            {
-                var rocketItem = _rocketGenerator.GetItem();
-                fillClass.FillOneObject(_gameBoard,point,rocketItem);
-            }
-          */
-            FillSequence();
-           
-        }
-        public async void FillSequence()
+        public async UniTask FillSequence()
         {
             await ItemFallDown.FallDown(_gameBoard, this, .1f);
-          //  await GridOperations.CheckDuck(_gameBoard, this);
             await fillClass.Fill(_gameBoard, 1, levelData);
         }
 
