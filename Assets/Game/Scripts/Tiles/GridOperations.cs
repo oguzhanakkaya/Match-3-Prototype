@@ -17,9 +17,10 @@ public static class GridOperations
 
     public static async UniTask ClearSequence(GameBoard gameBoard, GameController gameController)
     {
-        if (MatchSolver.GetMatches(gameBoard,GetLineDetectors()).Count > 0)
+        var matches = MatchSolver.GetMatches(gameBoard, GetLineDetectors());
+        if (matches.Count > 0)
         {
-            GridOperations.ClearMatchedItem(MatchSolver.GetMatches(gameBoard, GetLineDetectors()), gameBoard);
+            GridOperations.ClearMatchedItem(matches, gameBoard);
             await gameController.FillSequence();
             await ClearSequence(gameBoard, gameController);
         }

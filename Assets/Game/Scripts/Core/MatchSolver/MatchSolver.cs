@@ -8,8 +8,6 @@ using UnityEngine;
 
 public static class MatchSolver
 {
-   // private static readonly GridPoint[]  _lineDirections = new[] { GridPoint.Left, GridPoint.Right };
-
     private static List<MatchedItems<IGridNode>> matchedItems = new List<MatchedItems<IGridNode>>();
 
     public static List<MatchedItems<IGridNode>> GetMatches(GameBoard _gameBoard, List<LineDetectors> lines)

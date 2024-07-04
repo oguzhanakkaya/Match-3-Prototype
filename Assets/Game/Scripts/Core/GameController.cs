@@ -179,22 +179,18 @@ namespace Game.Scripts.Core
             if (_gameBoard.IsPointerOnGrid(e.WorldPosition, out GridPoint point))
             {
                 firstGridPoint = point;
-                canDrag = true;
             }
         }
         private async void OnPointerUp(object sender, PointerEventArgs e)
         {
             if (_gameBoard.IsPointerOnGrid(e.WorldPosition, out GridPoint point))
             {
-                if (!IsSameSlot(point) && IsDiagonalSlot(point))
+                if (IsSameSlot(point) || !IsDiagonalSlot(point) || !HasItem(point))
                     return;
                 
                 await GridOperations.SwapItemsAsync(firstGridPoint, point, _gameBoard,this);        
-               
-               
-            }
 
-            canDrag = false;
+            }
         }
         public void StartParticle(IGridNode grid)
         {
@@ -213,12 +209,14 @@ namespace Game.Scripts.Core
 
         private bool IsDiagonalSlot(GridPoint slotPosition)
         {
-            var isSideSlot = slotPosition.Equals(firstGridPoint + GridPoint.Up) ||
-                             slotPosition.Equals(firstGridPoint + GridPoint.Down) ||
-                             slotPosition.Equals(firstGridPoint + GridPoint.Left) ||
-                             slotPosition.Equals(firstGridPoint + GridPoint.Right);
-
-            return isSideSlot == false;
+            return slotPosition.Equals(firstGridPoint + GridPoint.Up) ||
+                   slotPosition.Equals(firstGridPoint + GridPoint.Down) ||
+                   slotPosition.Equals(firstGridPoint + GridPoint.Left) ||
+                   slotPosition.Equals(firstGridPoint + GridPoint.Right);
+        }
+        private bool HasItem(GridPoint slotPosition)
+        {
+            return _gameBoard[slotPosition].Item != null;
         }
 
 
