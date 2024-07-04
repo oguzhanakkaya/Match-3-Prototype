@@ -8,15 +8,22 @@ using UnityEngine;
 
 public static class MatchSolver
 {
-    private static readonly GridPoint[]  _lineDirections = new[] { GridPoint.Left, GridPoint.Right };
+   // private static readonly GridPoint[]  _lineDirections = new[] { GridPoint.Left, GridPoint.Right };
 
     private static List<MatchedItems<IGridNode>> matchedItems = new List<MatchedItems<IGridNode>>();
 
-
-
-    public static List<MatchedItems<IGridNode>> GetMatches(GameBoard _gameBoard)
+    public static List<MatchedItems<IGridNode>> GetMatches(GameBoard _gameBoard, List<LineDetectors> lines)
     {
         matchedItems.Clear();
+
+        foreach (var item in lines)
+            SetMatchesWithDirections(_gameBoard,item.lineDirections);
+
+        return matchedItems;
+    }
+
+    private static void SetMatchesWithDirections(GameBoard _gameBoard, GridPoint[] _lineDirections)
+    {
 
         for (var rowIndex = 0; rowIndex < _gameBoard.RowCount; rowIndex++)
         {
@@ -24,10 +31,10 @@ public static class MatchSolver
             {
                 GridPoint point=new GridPoint(rowIndex, columnIndex);
 
-                if (!CheckAllPointsOnGrid(point, _gameBoard))
+                if (!CheckAllPointsOnGrid(point, _gameBoard,_lineDirections))
                     continue;
 
-                if (CheckMatch(point,_gameBoard))
+                if (CheckMatch(point,_gameBoard, _lineDirections))
                 {
                      List<GridPoint> matchedGridPoint=new List<GridPoint>();
 
@@ -43,7 +50,6 @@ public static class MatchSolver
                 }
             }
         }
-        return matchedItems;
     }
     private static bool IsPointOnGrid(GridPoint point,GameBoard _gameBoard)
     {
@@ -53,7 +59,7 @@ public static class MatchSolver
                point.ColumnIndex < _gameBoard.ColumnCount;
             
     }
-    private static bool CheckAllPointsOnGrid(GridPoint point,GameBoard _gameBoard)
+    private static bool CheckAllPointsOnGrid(GridPoint point,GameBoard _gameBoard, GridPoint[] _lineDirections)
     {
         foreach (var item in _lineDirections)
         {
@@ -62,7 +68,7 @@ public static class MatchSolver
         }
         return true;
     }
-    private static bool CheckMatch(GridPoint point, GameBoard _gameBoard)
+    private static bool CheckMatch(GridPoint point, GameBoard _gameBoard, GridPoint[] _lineDirections)
     {
         foreach (var item in _lineDirections)
         {

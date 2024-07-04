@@ -17,9 +17,9 @@ public static class GridOperations
 
     public static async UniTask ClearSequence(GameBoard gameBoard, GameController gameController)
     {
-        if (MatchSolver.GetMatches(gameBoard).Count > 0)
+        if (MatchSolver.GetMatches(gameBoard,GetLineDetectors()).Count > 0)
         {
-            GridOperations.ClearMatchedItem(MatchSolver.GetMatches(gameBoard), gameBoard);
+            GridOperations.ClearMatchedItem(MatchSolver.GetMatches(gameBoard, GetLineDetectors()), gameBoard);
             await gameController.FillSequence();
             await ClearSequence(gameBoard, gameController);
         }
@@ -28,7 +28,7 @@ public static class GridOperations
     {
         await SwapGameBoardItemsAsync(position1, position2, gameBoard);
 
-        if (MatchSolver.GetMatches(gameBoard).Count > 0)
+        if (MatchSolver.GetMatches(gameBoard, GetLineDetectors()).Count > 0)
         {
             await ClearSequence(gameBoard, gameController);
         }
@@ -84,5 +84,13 @@ public static class GridOperations
 
         grid.Item.Hide();
         grid.Clear();
+    }
+    private static List<LineDetectors> GetLineDetectors()
+    {
+        LineDetectors horizontalDetector = new LineDetectors(new GridPoint[]{GridPoint.Left,GridPoint.Right});
+        LineDetectors verticalDetector = new LineDetectors(new GridPoint[]{GridPoint.Up,GridPoint.Down});
+
+        return  new List<LineDetectors>() {horizontalDetector,verticalDetector};
+
     }
 }
