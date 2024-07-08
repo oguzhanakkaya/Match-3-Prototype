@@ -20,7 +20,7 @@ namespace Game.Scripts.Core
         
         public void SetItem(IItem item)
         {
-            Item = item ?? throw new NullReferenceException(nameof(item));
+            Item = item;
         }
 
         public void Clear()

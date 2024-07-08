@@ -1,9 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
-using Game.Scripts.Core.Interfaces;
 using Match3System.Core.Interfaces;
 using Match3System.Core.Models;
-using UnityEngine;
 
 public class MatchedItems<TGridSlot> where TGridSlot : IGridNode
 {

@@ -1,5 +1,4 @@
 using Game.Scripts.Core.Interfaces;
-using Game.Scripts.Items;
 using Game.Scripts.UI;
 using Game.Scripts.UI.Interfaces;
 using Match3System.Core.Interfaces;

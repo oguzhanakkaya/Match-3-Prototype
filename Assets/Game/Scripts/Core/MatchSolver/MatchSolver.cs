@@ -1,11 +1,6 @@
-using Game.Scripts.Core.Interfaces;
 using Match3System.Core.Interfaces;
 using Match3System.Core.Models;
-using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
-using UnityEngine;
-
 public static class MatchSolver
 {
     private static List<MatchedItems<IGridNode>> matchedItems = new List<MatchedItems<IGridNode>>();

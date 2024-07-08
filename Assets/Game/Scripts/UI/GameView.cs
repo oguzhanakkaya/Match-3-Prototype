@@ -1,11 +1,5 @@
 using Game.Scripts.Core;
-using Game.Scripts.Core.Interfaces;
-using Game.Scripts.Core.Models;
-using Game.Scripts.Items;
 using Game.Scripts.UI.Interfaces;
-using PoolSystem;
-using PoolSystem.Core;
-using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

@@ -1,12 +1,7 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using Game.Scripts.Core;
-using Game.Scripts.Core.Interfaces;
 using Match3System.Core.Interfaces;
 using Match3System.Core.Models;
 using UnityEngine;
-
 public class GameBoard
 {
     private IGridNode[,] _gridSlots;
@@ -44,8 +39,5 @@ public class GameBoard
                gridPosition.ColumnIndex >= 0 &&
                gridPosition.ColumnIndex < ColumnCount;
     }
-    public void Dispose()
-    {
-        throw new NotImplementedException();
-    }
+    public void Dispose(){}
 }
