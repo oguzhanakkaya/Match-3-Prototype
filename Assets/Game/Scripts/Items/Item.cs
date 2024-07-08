@@ -13,9 +13,9 @@ namespace Game.Scripts.Core
         [SerializeField] private string _prefabId;
         [SerializeField] private SpriteRenderer _spriteRenderer;
         public IPool<Item> Pool { get; private set; }
-        private ItemType itemType;
+        private int itemType;
 
-        public ItemType ItemType => itemType;
+        public int ItemType => itemType;
         public Transform Transform => transform;
         public SpriteRenderer SpriteRenderer => _spriteRenderer;
         public string PrefabId => _prefabId;
@@ -25,7 +25,7 @@ namespace Game.Scripts.Core
 
         private void Start()
         {
-            Pool = _poolManager.GetPool<Item>(PrefabId) as IPool<Item>;
+         //   Pool = _poolManager.GetPool<Item>(PrefabId) as IPool<Item>;
         }
 
         public void Show()
@@ -38,7 +38,7 @@ namespace Game.Scripts.Core
             gameObject.SetActive(false);
         }
 
-        public void SetItem(Sprite sprite, ItemType type)
+        public void SetItem(Sprite sprite, int type)
         {
             itemType = type;
             _spriteRenderer.sprite = sprite;

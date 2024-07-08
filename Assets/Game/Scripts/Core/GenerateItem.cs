@@ -2,26 +2,24 @@ using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Game.Scripts.Core;
-using Game.Scripts.Core.Interfaces;
+using Lean.Pool;
 using Match3System.Core.Interfaces;
 using Match3System.Core.Models;
-using PoolSystem;
+using PoolSystem.Core;
 using UnityEngine;
-public class FillClass
+public class GenerateItem
 {
-    private readonly IPool<Item> _itemsPool;
+    private readonly PoolManager _poolManager;
     private readonly GameController _gameController;
-    private readonly IItemGenerator _itemGenerator;
-    public FillClass(SceneContext sceneContext)
+    private readonly LevelData _levelData;
+    public GenerateItem(SceneContext sceneContext,LevelData levelData)
     {
         _gameController = sceneContext.GetGameController();
-        _itemsPool = sceneContext.Resolve<IPoolManager>().GetPool<Item>("item_basic");
-        _itemGenerator = sceneContext.Resolve<NodeItemGenerator>();
+        _poolManager = sceneContext.Resolve<PoolManager>();
+        _levelData = levelData;
     }
-    public void FillInstantly(GameBoard gameBoard,LevelData levelData, ItemType[,] itemArray = null)
+    public void GenerateToAllBoard(GameBoard gameBoard)
     {
-        var itemsToShow = new List<Item>();
-
         for (int rowIndex = 0; rowIndex < gameBoard.RowCount; rowIndex++)
         {
             for (int columnIndex = 0; columnIndex < gameBoard.ColumnCount; columnIndex++)
@@ -31,20 +29,13 @@ public class FillClass
                 if (gridNode.HasItem != false)
                     continue;
 
-                Item item = null;
-
-                if (itemArray != null)
-                    item = GetItemFromPool(itemArray[rowIndex,columnIndex]);
-                else
-                    item = GetItemFromPool(levelData);
-
+                var item = GenerateRandomItem();
                 item.SetPosition(GetWorldPosition(rowIndex,columnIndex));
+                item.Show();
 
                 gridNode.SetItem(item);
-                itemsToShow.Add(item);
             }
         }
-        ShowItem(itemsToShow);
     }
     public async UniTask Fill(GameBoard gameBoard,int delay, LevelData levelData)
     {
@@ -56,19 +47,19 @@ public class FillClass
         {
             for (var rowIndex = gameBoard.RowCount-1; rowIndex >= 0; rowIndex--)
             {
-                IGridNode gridSlot = gameBoard[new GridPoint(rowIndex, columnIndex)];
+                IGridNode gridNode = gameBoard[new GridPoint(rowIndex, columnIndex)];
 
-                if (gridSlot.HasItem || !levelData.spawners[columnIndex])
+                if (gridNode.HasItem || !levelData.spawners[columnIndex])
                     continue;
 
-                Item item = GetItemFromPool(levelData);
+                var item = GenerateRandomItem();
                 GridPoint itemGeneratorPosition = GetItemGeneratorPosition(gameBoard, rowIndex, columnIndex);
-                item.SetPosition(GetWorldPosition(itemGeneratorPosition.RowIndex-2,itemGeneratorPosition.ColumnIndex));
-                ShowItem(item);
+                item.SetPosition(GetWorldPosition(itemGeneratorPosition.RowIndex - 2, itemGeneratorPosition.ColumnIndex));
+                item.Show();
 
-                tasks.Add(ItemMovement.MoveItem(item,GetWorldPosition(itemGeneratorPosition.RowIndex,itemGeneratorPosition.ColumnIndex)));
+                gridNode.SetItem(item);
 
-                gridSlot.SetItem(item);
+                tasks.Add(ItemMovement.MoveItem(item, GetWorldPosition(itemGeneratorPosition.RowIndex, itemGeneratorPosition.ColumnIndex)));
             }
         }
         await UniTask.WhenAll(tasks);
@@ -77,28 +68,14 @@ public class FillClass
     {
          return _gameController.GetWorldPosition(row,column);
     }
-    protected Item GetItemFromPool(LevelData levelData)
+    private Item GenerateRandomItem()
     {
-        return (Item)_itemGenerator.GetItem(levelData);
+        int i = UnityEngine.Random.Range(0, _levelData.levelItems.Count);
+        return LeanPool.Spawn(_levelData.levelItems[i]);
     }
-    protected Item GetItemFromPool(ItemType type)
+    private Item GenerateItemById(string id)
     {
-        return (Item)_itemGenerator.GetSpecificItem(type);
-    }
-    protected void ReturnItemToPool(Item item)
-    {
-        _itemsPool.Recycle(item);
-    }
-    private void ShowItem(List<Item> items)
-    {
-        foreach (var item in items)
-        {
-            item.Show();
-        }
-    }
-    private void ShowItem(IItem items)
-    {
-        items.Show();
+        return LeanPool.Spawn(_poolManager.GetComponentFromID(id)).GetComponent<Item>();
     }
     private GridPoint GetItemGeneratorPosition(GameBoard gameBoard, int rowIndex, int columnIndex)
     {

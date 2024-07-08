@@ -27,13 +27,14 @@ public class GameData : ScriptableObject
         }
         return null;
     }
-    public Color32 GetParticleColorFromItemType(ItemType itemType)
+    public Color32 GetParticleColorFromItemType(int itemType)
     {
-        foreach (var item in spriteDatas)
+        return new Color32(0,0,0,0);
+      /*  foreach (var item in spriteDatas)
         {
             if (item.itemType == itemType)
                 return item.particleColor;
         }
-        return Color.white;
+        return Color.white;*/
     }
 }

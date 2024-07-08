@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 63931054260223692}
   - component: {fileID: 2388917405439323630}
-  - component: {fileID: -7405472675320757686}
   - component: {fileID: 5352543543409305498}
   m_Layer: 0
   m_Name: Tile_Basic
@@ -47,18 +46,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _prefabId: tile_basic
---- !u!114 &-7405472675320757686
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 63931054260223693}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6c4bdf396eed0cf4cb303dfd900ef53b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!212 &5352543543409305498
 SpriteRenderer:
   m_ObjectHideFlags: 0

@@ -21,11 +21,10 @@ namespace Game.Scripts.Core
             
             Register<IGameView>(_gameView);
             Register<IInputSystem>(_inputSystem);
+            Register<PoolManager>(_poolManager);
 
-            InitPooling();
-            
-            CreateGenerator();
-            CreateParticleGenerator();
+        //    CreateGenerator();
+        //    CreateParticleGenerator();
 
             Register(GetGameSession());
             Register(_gameController);
@@ -34,11 +33,6 @@ namespace Game.Scripts.Core
             _gameController.Init();
         }
 
-        private void InitPooling()
-        {
-            _poolManager.Init();
-            Register<IPoolManager>(_poolManager);
-        }
         private GameSession GetGameSession()
         {
             return new GameSession(this);
@@ -53,16 +47,16 @@ namespace Game.Scripts.Core
         }
         private void CreateGenerator()
         {
-            var itemPool = _poolManager.GetPool<Item>("item_basic");
+           /* var itemPool = _poolManager.GetPool<Item>("item_basic");
             var nodeItemGenerator = new NodeItemGenerator(itemPool);
             nodeItemGenerator.SetGameData(gameData);
-            Register<NodeItemGenerator>(nodeItemGenerator);
+            Register<NodeItemGenerator>(nodeItemGenerator);*/
         }
         private void CreateParticleGenerator()
         {
-            var itemPool = _poolManager.GetPool<ParticleObject>("particle_object");
+          /*  var itemPool = _poolManager.GetPool<ParticleObject>("particle_object");
             var particleGenerator = new ParticleGenerator(itemPool);
-            Register<ParticleGenerator>(particleGenerator);
+            Register<ParticleGenerator>(particleGenerator);*/
         }
     }
 }

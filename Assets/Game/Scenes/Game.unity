@@ -444,8 +444,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _poolDataList:
-  - PrefabId: item_basic
+  - PrefabId: item_green
     Prefab: {fileID: 6595953643227195593, guid: 745b4d58b3f92914d89620c33ed3b6e0, type: 3}
+  - PrefabId: item_yellow
+    Prefab: {fileID: 6595953643227195593, guid: 19e6c21ca3220714eb39529556f3aac3, type: 3}
+  - PrefabId: item_red
+    Prefab: {fileID: 6595953643227195593, guid: 7814c0799f724c641997d41f73cfe4f8, type: 3}
+  - PrefabId: item_blue
+    Prefab: {fileID: 6595953643227195593, guid: bdb078ecc99f4fa4d91ce8335e5fc88f, type: 3}
   - PrefabId: tile_basic
     Prefab: {fileID: 2388917405439323630, guid: 99b023b789f61e14f9cdaaacecb4044f, type: 3}
   - PrefabId: particle_object

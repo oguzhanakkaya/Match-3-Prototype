@@ -14,14 +14,14 @@ namespace Game.Scripts.Core
         protected override IItem ConfigureItem<T1>(Item item,LevelData levelData)
         {
             var index = _random.Next(0, levelData.levelItems.Count);
-            item.SetItem(GetLevelItemSprite(levelData, index), levelData.levelItems[index]);
+            item.SetItem(GetLevelItemSprite(levelData, index),0);
 
             return item;
         }
 
         protected override IItem ConfigureItem<T1>(Item item,ItemType itemType)
         {
-             item.SetItem(gameData.GetSprite(itemType),itemType);
+             item.SetItem(gameData.GetSprite(itemType),0);
 
              return item;
           //  return null;
@@ -34,7 +34,8 @@ namespace Game.Scripts.Core
 
         private Sprite GetLevelItemSprite(LevelData levelData,int i)
         {
-            return gameData.GetSprite(levelData.levelItems[i]);
+            return null;
+          //  return gameData.GetSprite(levelData.levelItems[i]);
         }
 
         public NodeItemGenerator(IPool<Item> pool) : base(pool)

@@ -1,3 +1,4 @@
+using Game.Scripts.Core;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,7 +8,7 @@ public class LevelData : ScriptableObject
     public int rowIndex, columnIndex;
     public int moveCount;
     public int destroyItemCount;
-    public List<ItemType> levelItems;
+    public List<Item> levelItems;
     public List<bool> spawners=new List<bool>();
     private void OnValidate()
     {

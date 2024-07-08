@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 63931054260223692}
   - component: {fileID: 6595953643227195593}
-  - component: {fileID: -7405472675320757686}
   - component: {fileID: 2940377966044809072}
   m_Layer: 0
   m_Name: Item_yellow
@@ -48,18 +47,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _prefabId: item_yellow
   _spriteRenderer: {fileID: 2940377966044809072}
---- !u!114 &-7405472675320757686
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 63931054260223693}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6c4bdf396eed0cf4cb303dfd900ef53b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!212 &2940377966044809072
 SpriteRenderer:
   m_ObjectHideFlags: 0

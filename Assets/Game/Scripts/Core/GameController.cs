@@ -2,13 +2,13 @@ using System;
 using Cysharp.Threading.Tasks;
 using Game.Scripts.Core.Interfaces;
 using Game.Scripts.Core.Models;
-using Game.Scripts.Tiles;
 using Match3System.Core.Interfaces;
 using Match3System.Core.Models;
-using PoolSystem;
 using UnityEngine;
 using TMPro;
 using Game.Scripts.UI;
+using Lean.Pool;
+using PoolSystem.Core;
 
 namespace Game.Scripts.Core
 {
@@ -27,14 +27,11 @@ namespace Game.Scripts.Core
         private int _rowCount, _columnCount;
         private Vector3 _originPosition;
         private GridNode[,] _gameBoardNodes;
-        private IPoolManager _poolManager;
-        private NodeItemGenerator _itemGenerator;
-        private ParticleGenerator _particleGenerator;
-        private IPool<BasicTile> _tilePool;
+        private PoolManager _poolManager;
+        private GenerateItem _generateItemClass;
         private GridPoint firstGridPoint;
         private GameData _gameData;
 
-        public FillClass fillClass;
         public LevelData levelData;
         public GameBoard _gameBoard;
 
@@ -55,13 +52,8 @@ namespace Game.Scripts.Core
         }
         public async void Init()
         {
-            _poolManager = _sceneContext.Resolve<IPoolManager>();
-            _itemGenerator = _sceneContext.Resolve<NodeItemGenerator>();
-            _particleGenerator = _sceneContext.Resolve<ParticleGenerator>();
+            _poolManager = _sceneContext.Resolve<PoolManager>();
             _gameData = _sceneContext.GetGameData();
-
-            _tilePool = _poolManager.GetPool<BasicTile>("tile_basic");
-
             _gameView.Init();
 
             LoadLevel();
@@ -106,7 +98,7 @@ namespace Game.Scripts.Core
         }
         private IGridTile GetTile()
         {
-            return _tilePool.Spawn();
+            return LeanPool.Spawn(_poolManager.GetComponentFromID("tile_basic")).GetComponent<IGridTile>();
         }
         private void SetGridFrame()
         {
@@ -167,12 +159,12 @@ namespace Game.Scripts.Core
         }
         public void StartParticle(IGridNode grid)
         {
-            _particleGenerator.GetItem().StartParticle(_gameData.GetParticleColorFromItemType(grid.Item.ItemType), grid.Item.GetPosition());
+           // _particleGenerator.GetItem().StartParticle(_gameData.GetParticleColorFromItemType(0), grid.Item.GetPosition());
         }
         public async UniTask FillSequence()
         {
             await ItemFallDown.FallDown(_gameBoard, this, .1f);
-            await fillClass.Fill(_gameBoard, 1, levelData);
+           // await fillClass.Fill(_gameBoard, 1, levelData);
         }
         private bool IsSameSlot(GridPoint slotPosition)
         {
@@ -193,8 +185,7 @@ namespace Game.Scripts.Core
 
         public async void LoadLevel()
         {
-            _tilePool.RecycleAll();
-            _poolManager.GetPool<Item>("item_basic").RecycleAll();
+            LeanPool.DespawnAll();
 
             _rowCount = levelData.rowIndex;
             _columnCount = levelData.columnIndex;
@@ -206,18 +197,16 @@ namespace Game.Scripts.Core
             var columnCount = gameBoardData.GetLength(1);
             var itemsPoolCapacity = rowCount * columnCount + Mathf.Max(rowCount, columnCount) * 2;
 
-            _itemGenerator.CreateItems(itemsPoolCapacity);
-            _particleGenerator.CreateItems(itemsPoolCapacity);
-
             _gameBoard = new GameBoard();
             _gameBoard.SetGridSlots(_gameBoardNodes, GetOriginPosition(rowCount, columnCount), _tileSize);
 
-            fillClass = new FillClass(_sceneContext);
-            fillClass.FillInstantly(_gameBoard, levelData);
+            _generateItemClass = new GenerateItem(_sceneContext,levelData);
+            _generateItemClass.GenerateToAllBoard(_gameBoard);
 
             SetGridFrame();
             SetCamera();
 
+            
             moveCount = levelData.moveCount;
             destroyItemCount = levelData.destroyItemCount;
 
@@ -225,6 +214,8 @@ namespace Game.Scripts.Core
             ItemDestroy?.Invoke(this, destroyItemCount);
 
             isLevelEnded = false;
+
+            return;
 
             await GridOperations.ClearSequence(_gameBoard, this);
         }

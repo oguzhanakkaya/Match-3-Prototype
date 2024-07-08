@@ -6,7 +6,7 @@ namespace Game.Scripts.Core.Interfaces
 {
     public interface IItem
     {
-        ItemType ItemType { get; }
+        int ItemType { get; }
 
         Transform Transform { get; }
         SpriteRenderer SpriteRenderer { get; }
@@ -14,7 +14,7 @@ namespace Game.Scripts.Core.Interfaces
         void Show();
         void Hide();
 
-        void SetItem(Sprite sprite,ItemType itemType);
+        void SetItem(Sprite sprite,int itemType);
         void SetPosition(Vector3 position);
         Vector3 GetPosition();
         void SetScale(float value);

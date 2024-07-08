@@ -4,12 +4,12 @@ using Match3System.Core.Models;
 
 public class MatchedItems<TGridSlot> where TGridSlot : IGridNode
 {
-    public MatchedItems(ItemType itemType, List<GridPoint> matchedGridPoint)
+    public MatchedItems(int itemType, List<GridPoint> matchedGridPoint)
     {
         this.itemType = itemType;
         this.matchedItems = matchedGridPoint;
     }
 
-    public ItemType itemType { get; }
+    public int itemType { get; }
     public List<GridPoint> matchedItems { get; set; }
 }
