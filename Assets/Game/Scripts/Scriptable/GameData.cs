@@ -1,8 +1,5 @@
-
-using Match3System.Core.Interfaces;
-using Match3System.Core.Models;
-using System.Collections.Generic;
 using UnityEngine;
+
 [System.Serializable]
 public class SpriteData
 {

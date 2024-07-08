@@ -1,10 +1,8 @@
 using Cysharp.Threading.Tasks;
 using Game.Scripts.Core.DependencyInjection;
 using Game.Scripts.Core.Interfaces;
-using Game.Scripts.Items;
 using Match3System.Core.Models;
 using PoolSystem;
-using PoolSystem.Core;
 using System.Collections.Generic;
 using UnityEngine;
 

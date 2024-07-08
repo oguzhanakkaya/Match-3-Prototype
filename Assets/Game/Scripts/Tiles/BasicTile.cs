@@ -1,4 +1,3 @@
-using System;
 using Game.Scripts.Core.DependencyInjection;
 using Game.Scripts.Core.DependencyInjection.Interfaces;
 using Game.Scripts.Core.Interfaces;

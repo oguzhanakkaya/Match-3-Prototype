@@ -1,14 +1,9 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Game.Scripts.Core;
-using Game.Scripts.Core.Interfaces;
 using Match3System.Core.Interfaces;
 using Match3System.Core.Models;
-using UnityEngine;
-using UnityEngine.Playables;
 
 public static class GridOperations
 {

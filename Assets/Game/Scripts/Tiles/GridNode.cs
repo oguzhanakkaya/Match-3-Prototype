@@ -1,5 +1,3 @@
-using System;
-using System.Diagnostics;
 using Game.Scripts.Core.Interfaces;
 using Match3System.Core.Interfaces;
 using Match3System.Core.Models;
