@@ -12,19 +12,21 @@ public class GenerateItem
     private readonly PoolManager _poolManager;
     private readonly GameController _gameController;
     private readonly LevelData _levelData;
+    private readonly IGridNode[,] _gridNode;
     public GenerateItem(SceneContext sceneContext,LevelData levelData)
     {
         _gameController = sceneContext.GetGameController();
         _poolManager = sceneContext.Resolve<PoolManager>();
         _levelData = levelData;
+        _gridNode = _gameController.GetGameBoardNodes();
     }
-    public void GenerateToAllBoard(GameBoard gameBoard)
+    public void GenerateToAllBoard()
     {
-        for (int rowIndex = 0; rowIndex < gameBoard.RowCount; rowIndex++)
+        for (int rowIndex = 0; rowIndex < _gridNode.GetLength(0); rowIndex++)
         {
-            for (int columnIndex = 0; columnIndex < gameBoard.ColumnCount; columnIndex++)
+            for (int columnIndex = 0; columnIndex < _gridNode.GetLength(1); columnIndex++)
             {
-                IGridNode gridNode = gameBoard[new GridPoint(rowIndex,columnIndex)];
+                IGridNode gridNode = _gridNode[rowIndex,columnIndex];
 
                 if (gridNode.HasItem != false)
                     continue;
@@ -37,23 +39,23 @@ public class GenerateItem
             }
         }
     }
-    public async UniTask Fill(GameBoard gameBoard,int delay, LevelData levelData)
+    public async UniTask Fill()
     {
         await UniTask.Delay(TimeSpan.FromSeconds(.1f));
 
         List<UniTask> tasks = new List<UniTask>();
 
-        for (var columnIndex = gameBoard.ColumnCount-1; columnIndex >= 0; columnIndex--)
+        for (var columnIndex = _gridNode.GetLength(1) - 1; columnIndex >= 0; columnIndex--)
         {
-            for (var rowIndex = gameBoard.RowCount-1; rowIndex >= 0; rowIndex--)
+            for (var rowIndex = _gridNode.GetLength(0) - 1; rowIndex >= 0; rowIndex--)
             {
-                IGridNode gridNode = gameBoard[new GridPoint(rowIndex, columnIndex)];
+                IGridNode gridNode = _gridNode[rowIndex, columnIndex];
 
-                if (gridNode.HasItem || !levelData.spawners[columnIndex])
+                if (gridNode.HasItem || !_levelData.spawners[columnIndex])
                     continue;
 
                 var item = GenerateRandomItem();
-                GridPoint itemGeneratorPosition = GetItemGeneratorPosition(gameBoard, rowIndex, columnIndex);
+                GridPoint itemGeneratorPosition = GetItemGeneratorPosition(rowIndex, columnIndex);
                 item.SetPosition(GetWorldPosition(itemGeneratorPosition.RowIndex - 2, itemGeneratorPosition.ColumnIndex));
                 item.Show();
 
@@ -77,11 +79,11 @@ public class GenerateItem
     {
         return LeanPool.Spawn(_poolManager.GetComponentFromID(id)).GetComponent<Item>();
     }
-    private GridPoint GetItemGeneratorPosition(GameBoard gameBoard, int rowIndex, int columnIndex)
+    private GridPoint GetItemGeneratorPosition( int rowIndex, int columnIndex)
     {
         while (rowIndex >= 0)
         {
-            var gridSlot = gameBoard[new GridPoint(rowIndex, columnIndex)];
+            var gridSlot = _gridNode[rowIndex, columnIndex];
             if (gridSlot.HasItem ==false)
                 return new GridPoint(rowIndex, columnIndex);
 
