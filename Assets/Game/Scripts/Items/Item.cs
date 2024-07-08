@@ -14,14 +14,13 @@ namespace Game.Scripts.Core
         [SerializeField] private SpriteRenderer _spriteRenderer;
         public IPool<Item> Pool { get; private set; }
         private int itemType;
-
+        private bool usable;
+        public bool Usable => usable;
         public int ItemType => itemType;
         public Transform Transform => transform;
         public SpriteRenderer SpriteRenderer => _spriteRenderer;
         public string PrefabId => _prefabId;
         public Item Component => this;
-
-        [Inject] private IPoolManager _poolManager;
 
         private void Start()
         {
@@ -58,32 +57,9 @@ namespace Game.Scripts.Core
         {
             transform.localScale = new Vector3(value, value, value);
         }
-
-        public async UniTask ItemClicked(GameBoard board,GridPoint point)
+        public virtual void Use()
         {
-          //  var matchedList = MatchDetector.GetMatchedItems(board[point], board);
 
-           /* if (matchedList == null || matchedList.Count < 2)
-                return;*/
-
-            // _audioManager.PlayAudio(Audios.Explode);
-
-
-            List<UniTask> tasks = new List<UniTask>();
-
-         /*   foreach (var item in matchedList)
-            {
-              //  StartParticle(item);
-                tasks.Add(GridOperations.ClearTileAsync(item));
-            }*/
-            await UniTask.WhenAll(tasks);
-
-         /*   if (matchedList.Count >= 5) // Check Can Create Rocket
-            {
-                var rocketItem = _rocketGenerator.GetItem();
-                fillClass.FillOneObject(_gameBoard, point, rocketItem);
-            }
-         */
         }
     }
 }

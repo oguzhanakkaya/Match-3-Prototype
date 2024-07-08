@@ -19,6 +19,6 @@ namespace Game.Scripts.Core.Interfaces
         Vector3 GetPosition();
         void SetScale(float value);
 
-        UniTask ItemClicked(GameBoard board, GridPoint point);
+        void Use();
     }
 }

@@ -58,7 +58,7 @@ namespace Game.Scripts.Core
 
             LoadLevel();
         }
-        public IGridNode[,] GetGameBoardNodes(int level)
+        public IGridNode[,] GetGameBoardNodes()
         {
             return _gameBoardNodes;
         }
@@ -192,16 +192,15 @@ namespace Game.Scripts.Core
 
             CreateGridTiles(null);
 
-            var gameBoardData = GetGameBoardNodes(0);
-            var rowCount = gameBoardData.GetLength(0);
-            var columnCount = gameBoardData.GetLength(1);
+            var rowCount = GetGameBoardNodes().GetLength(0);
+            var columnCount = GetGameBoardNodes().GetLength(1);
             var itemsPoolCapacity = rowCount * columnCount + Mathf.Max(rowCount, columnCount) * 2;
 
             _gameBoard = new GameBoard();
             _gameBoard.SetGridSlots(_gameBoardNodes, GetOriginPosition(rowCount, columnCount), _tileSize);
 
             _generateItemClass = new GenerateItem(_sceneContext,levelData);
-            _generateItemClass.GenerateToAllBoard(_gameBoard);
+            _generateItemClass.GenerateToAllBoard();
 
             SetGridFrame();
             SetCamera();
@@ -214,8 +213,6 @@ namespace Game.Scripts.Core
             ItemDestroy?.Invoke(this, destroyItemCount);
 
             isLevelEnded = false;
-
-            return;
 
             await GridOperations.ClearSequence(_gameBoard, this);
         }

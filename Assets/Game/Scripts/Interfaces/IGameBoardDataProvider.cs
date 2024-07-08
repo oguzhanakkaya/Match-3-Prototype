@@ -4,6 +4,6 @@ namespace Game.Scripts.Core.Interfaces
 {
     public interface IGameBoardDataProvider<out TGridNode> where TGridNode : IGridNode
     {
-        TGridNode[,] GetGameBoardNodes(int level);
+        TGridNode[,] GetGameBoardNodes();
     }
 }
