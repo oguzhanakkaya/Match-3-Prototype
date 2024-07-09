@@ -13,7 +13,7 @@ namespace Game.Scripts.Core
         [SerializeField] private string _prefabId;
         [SerializeField] private SpriteRenderer _spriteRenderer;
         public IPool<Item> Pool { get; private set; }
-        private int itemType;
+        [SerializeField]private int itemType;
         private bool usable;
         public bool Usable => usable;
         public int ItemType => itemType;
