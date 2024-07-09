@@ -15,8 +15,12 @@ namespace Game.Scripts.Core
         [SerializeField] private Camera _camera;
         [SerializeField] private EventTrigger _eventTrigger;
 
-        private void Awake()
+        private EventBus _eventBus;
+
+        public void Initialize()
         {
+            _eventBus = ServiceLocator.Instance.Resolve<EventBus>();
+
             var pointerDown = new EventTrigger.Entry { eventID = EventTriggerType.PointerDown };
             pointerDown.callback.AddListener(data => { OnPointerDown((PointerEventData) data); });
 
@@ -33,17 +37,16 @@ namespace Game.Scripts.Core
 
         private void OnPointerDown(PointerEventData e)
         {
-            PointerDown?.Invoke(this, GetPointerEventArgs(e));
+            _eventBus.Fire(new GameEvents.OnPointerDown(GetPointerEventArgs(e)));
         }
 
         private void OnPointerDrag(PointerEventData e)
         {
-            PointerDrag?.Invoke(this, GetPointerEventArgs(e));
         }
 
         private void OnPointerUp(PointerEventData e)
         {
-            PointerUp?.Invoke(this, GetPointerEventArgs(e));
+            _eventBus.Fire(new GameEvents.OnPointerUp(GetPointerEventArgs(e)));
         }
 
         private PointerEventArgs GetPointerEventArgs(PointerEventData e)

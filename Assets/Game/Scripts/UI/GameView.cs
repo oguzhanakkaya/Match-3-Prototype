@@ -14,17 +14,27 @@ namespace Game.Scripts.UI
         [SerializeField]private Button retryLevelButton, nextLevelButton;
 
         private GameController gameController;
+        private EventBus _eventBus;
         public void Init()
         {
+
             gameController = _sceneContext.Resolve<GameController>();
 
-            gameController.ItemDestroy += ItemDestroy;
-            gameController.MoveComplete += MoveComplete;
-            gameController.OnLevelCompleted += OnLevelCompleted;
-            gameController.OnLevelFailed += OnLevelFailed;
+            _eventBus = ServiceLocator.Instance.Resolve<EventBus>();
+            _eventBus.Subscribe<GameEvents.OnItemDestroyed>(OnItemDestroy);
+            _eventBus.Subscribe<GameEvents.OnMoveCompleted>(OnMoveComplete);
+            _eventBus.Subscribe<GameEvents.OnLevelFailed>(OnLevelFailed);
+            _eventBus.Subscribe<GameEvents.OnLevelCompleted>(OnLevelCompleted);
 
             retryLevelButton.onClick.AddListener(NextLevelButtonPressed);
             nextLevelButton.onClick.AddListener(RetryButtonPressed);
+        }
+        private void OnDestroy()
+        {
+            _eventBus.Unsubscribe<GameEvents.OnItemDestroyed>(OnItemDestroy);
+            _eventBus.Unsubscribe<GameEvents.OnMoveCompleted>(OnMoveComplete);
+            _eventBus.Unsubscribe<GameEvents.OnLevelFailed>(OnLevelFailed);
+            _eventBus.Unsubscribe<GameEvents.OnLevelCompleted>(OnLevelCompleted);
         }
         private void NextLevelButtonPressed()
         {
@@ -36,21 +46,21 @@ namespace Game.Scripts.UI
             levelCompletedUI.gameObject.SetActive(false);
             gameController.LoadLevel();
         }
-        private void OnLevelFailed(object sender, bool e)
+        private void OnLevelFailed()
         {
             levelFailedUI.gameObject.SetActive(true);
         }
-        private void OnLevelCompleted(object sender, bool e)
+        private void OnLevelCompleted()
         {
             levelCompletedUI.gameObject.SetActive(true);
         }
-        private void MoveComplete(object sender, int e)
+        private void OnMoveComplete(GameEvents.OnMoveCompleted onMoveCompleted)
         {
-            moveCountText.text = e.ToString();
+            moveCountText.text = onMoveCompleted.moveCount.ToString();
         }
-        private void ItemDestroy(object sender, int e)
+        private void OnItemDestroy(GameEvents.OnItemDestroyed onItemDestroyed)
         {
-            destroyedItemCountText.text = e.ToString();
+            destroyedItemCountText.text = onItemDestroyed.remainingItemCount.ToString();
         }
     }
 }

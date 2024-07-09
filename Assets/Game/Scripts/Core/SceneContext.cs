@@ -29,8 +29,12 @@ namespace Game.Scripts.Core
             Register(GetGameSession());
             Register(_gameController);
             Register<IGameBoardDataProvider<IGridNode>>(_gameController);
-            
+
+            Container.Initialize();
+
+            _gameView.Init();
             _gameController.Init();
+            _inputSystem.Initialize();
         }
 
         private GameSession GetGameSession()

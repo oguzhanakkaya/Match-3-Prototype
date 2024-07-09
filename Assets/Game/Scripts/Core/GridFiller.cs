@@ -7,13 +7,13 @@ using Match3System.Core.Interfaces;
 using Match3System.Core.Models;
 using PoolSystem.Core;
 using UnityEngine;
-public class GenerateItem
+public class GridFiller
 {
     private readonly PoolManager _poolManager;
     private readonly GameController _gameController;
     private readonly LevelData _levelData;
     private readonly IGridNode[,] _gridNode;
-    public GenerateItem(SceneContext sceneContext,LevelData levelData)
+    public GridFiller(SceneContext sceneContext,LevelData levelData)
     {
         _gameController = sceneContext.GetGameController();
         _poolManager = sceneContext.Resolve<PoolManager>();

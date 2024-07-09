@@ -1,7 +1,6 @@
 using System;
 using Cysharp.Threading.Tasks;
 using Game.Scripts.Core.Interfaces;
-using Game.Scripts.Core.Models;
 using Match3System.Core.Interfaces;
 using Match3System.Core.Models;
 using UnityEngine;
@@ -19,44 +18,38 @@ namespace Game.Scripts.Core
         [SerializeField] private SpriteRenderer gridFrame;
         [SerializeField] private Camera mainCamera;
         [SerializeField] private TextMeshProUGUI moveCountText;
-        [SerializeField] private GameView _gameView;
 
         private bool isLevelEnded;
         private float _tileSize = 1f;
         private int moveCount,destroyItemCount;
         private int _rowCount, _columnCount;
         private Vector3 _originPosition;
+        private GridPoint firstGridPoint;
         private GridNode[,] _gameBoardNodes;
         private PoolManager _poolManager;
-        private GenerateItem _generateItemClass;
-        private GridPoint firstGridPoint;
+        private GridFiller _generateItemClass;
         private GameData _gameData;
+        private EventBus _eventBus;
 
         public LevelData levelData;
         public GameBoard _gameBoard;
 
-        public event EventHandler<int> MoveComplete;
-        public event EventHandler<int> ItemDestroy;
-        public event EventHandler<bool> OnLevelFailed;
-        public event EventHandler<bool> OnLevelCompleted;
-
-        private void Awake()
+        public async void Init()
         {
-            _inputSystem.PointerUp += OnPointerUp;
-            _inputSystem.PointerDown += OnPointerDown;
+            _eventBus = ServiceLocator.Instance.Resolve<EventBus>();
+
+            _eventBus.Subscribe<GameEvents.OnPointerDown>(OnPointerDown);
+            _eventBus.Subscribe<GameEvents.OnPointerUp>(OnPointerUp);
+
+            _poolManager = _sceneContext.Resolve<PoolManager>();
+            _gameData = _sceneContext.GetGameData();
+
+            LoadLevel();
         }
         private void OnDestroy()
         {
-            _inputSystem.PointerUp -= OnPointerUp;
-            _inputSystem.PointerDown -= OnPointerDown;
-        }
-        public async void Init()
-        {
-            _poolManager = _sceneContext.Resolve<PoolManager>();
-            _gameData = _sceneContext.GetGameData();
-            _gameView.Init();
-
-            LoadLevel();
+            _eventBus.Unsubscribe<GameEvents.OnPointerDown>(OnPointerDown);
+            _eventBus.Unsubscribe<GameEvents.OnPointerUp>(OnPointerUp);
         }
         public IGridNode[,] GetGameBoardNodes()
         {
@@ -120,35 +113,35 @@ namespace Game.Scripts.Core
         private void DecreaseMoveCount()
         {
             moveCount--;
-            MoveComplete?.Invoke(this,moveCount);
+            _eventBus.Fire(new GameEvents.OnMoveCompleted(moveCount));
 
             if (moveCount<=0 && !isLevelEnded)
             {
                 isLevelEnded = true;
-                OnLevelFailed?.Invoke(this,true);
+                _eventBus.Fire(new GameEvents.OnLevelFailed());
             }
         }
         public void DecreaseItemDestroyCount()
         {
             destroyItemCount--;
-            ItemDestroy?.Invoke(this, destroyItemCount);
+            _eventBus.Fire(new GameEvents.OnItemDestroyed(destroyItemCount));
 
             if (destroyItemCount <= 0 && !isLevelEnded)
             {
                 isLevelEnded = true;
-                OnLevelCompleted?.Invoke(this, true);
+                _eventBus.Fire(new GameEvents.OnLevelCompleted());
             }
         }
-        private async void OnPointerDown(object sender, PointerEventArgs e)
+        private void OnPointerDown(GameEvents.OnPointerDown pointer)
         {
-            if (_gameBoard.IsPointerOnGrid(e.WorldPosition, out GridPoint point))
+            if (_gameBoard.IsPointerOnGrid(pointer.point.WorldPosition, out GridPoint point))
             {
                 firstGridPoint = point;
             }
         }
-        private async void OnPointerUp(object sender, PointerEventArgs e)
+        private async void OnPointerUp(GameEvents.OnPointerUp pointer)
         {
-            if (_gameBoard.IsPointerOnGrid(e.WorldPosition, out GridPoint point))
+            if (_gameBoard.IsPointerOnGrid(pointer.point.WorldPosition, out GridPoint point))
             {
                 if (IsSameSlot(point) || !IsDiagonalSlot(point) || !HasItem(point) || isLevelEnded)
                     return;
@@ -199,18 +192,18 @@ namespace Game.Scripts.Core
             _gameBoard = new GameBoard();
             _gameBoard.SetGridSlots(_gameBoardNodes, GetOriginPosition(rowCount, columnCount), _tileSize);
 
-            _generateItemClass = new GenerateItem(_sceneContext,levelData);
+            _generateItemClass = new GridFiller(_sceneContext,levelData);
             _generateItemClass.GenerateToAllBoard();
 
             SetGridFrame();
             SetCamera();
 
-            
+
             moveCount = levelData.moveCount;
             destroyItemCount = levelData.destroyItemCount;
 
-            MoveComplete?.Invoke(this, moveCount);
-            ItemDestroy?.Invoke(this, destroyItemCount);
+            _eventBus.Fire(new GameEvents.OnMoveCompleted(moveCount));
+            _eventBus.Fire(new GameEvents.OnItemDestroyed(destroyItemCount));
 
             isLevelEnded = false;
 
