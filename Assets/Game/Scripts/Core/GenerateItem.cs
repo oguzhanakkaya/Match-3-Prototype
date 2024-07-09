@@ -70,14 +70,14 @@ public class GenerateItem
     {
          return _gameController.GetWorldPosition(row,column);
     }
-    private Item GenerateRandomItem()
+    private ItemBase GenerateRandomItem()
     {
         int i = UnityEngine.Random.Range(0, _levelData.levelItems.Count);
         return LeanPool.Spawn(_levelData.levelItems[i]);
     }
-    private Item GenerateItemById(string id)
+    private ItemBase GenerateItemById(string id)
     {
-        return LeanPool.Spawn(_poolManager.GetComponentFromID(id)).GetComponent<Item>();
+        return LeanPool.Spawn(_poolManager.GetComponentFromID(id)).GetComponent<ItemBase>();
     }
     private GridPoint GetItemGeneratorPosition( int rowIndex, int columnIndex)
     {

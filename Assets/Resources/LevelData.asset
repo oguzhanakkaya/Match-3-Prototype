@@ -17,8 +17,8 @@ MonoBehaviour:
   moveCount: 15
   destroyItemCount: 100
   levelItems:
-  - {fileID: 6595953643227195593, guid: bdb078ecc99f4fa4d91ce8335e5fc88f, type: 3}
-  - {fileID: 6595953643227195593, guid: 745b4d58b3f92914d89620c33ed3b6e0, type: 3}
-  - {fileID: 6595953643227195593, guid: 7814c0799f724c641997d41f73cfe4f8, type: 3}
-  - {fileID: 6595953643227195593, guid: 19e6c21ca3220714eb39529556f3aac3, type: 3}
+  - {fileID: 5399523649903418736, guid: bdb078ecc99f4fa4d91ce8335e5fc88f, type: 3}
+  - {fileID: 7305486644823461390, guid: 745b4d58b3f92914d89620c33ed3b6e0, type: 3}
+  - {fileID: 5065984464581727828, guid: 7814c0799f724c641997d41f73cfe4f8, type: 3}
+  - {fileID: -8632988987601916505, guid: 19e6c21ca3220714eb39529556f3aac3, type: 3}
   spawners: 0101010101010101

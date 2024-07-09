@@ -8,19 +8,19 @@ using UnityEngine;
 
 namespace Game.Scripts.Core
 {
-    public class Item : MonoBehaviour, IItem, IPoolObject<Item>
+    public class ItemBase : MonoBehaviour, IItem, IPoolObject<ItemBase>
     {
         [SerializeField] private string _prefabId;
         [SerializeField] private SpriteRenderer _spriteRenderer;
         [SerializeField] private int itemType;
-        public IPool<Item> Pool { get; private set; }
+        public IPool<ItemBase> Pool { get; private set; }
         private bool usable;
         public bool Usable => usable;
         public int ItemType => itemType;
         public Transform Transform => transform;
         public SpriteRenderer SpriteRenderer => _spriteRenderer;
         public string PrefabId => _prefabId;
-        public Item Component => this;
+        public ItemBase Component => this;
 
         public void Show()
         {
