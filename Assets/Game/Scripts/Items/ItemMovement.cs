@@ -10,7 +10,7 @@ using UnityEngine;
 
 public static class ItemMovement 
 {
-    public static async UniTask MoveItem(IItem item, Vector3 targetPos, float delay = .1f)
+    public static async UniTask MoveItem(IItem item, Vector3 targetPos)
     {
         await item.Transform.DOMove(targetPos, .25f).SetEase(Ease.Flash);
     }

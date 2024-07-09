@@ -27,8 +27,7 @@ namespace Game.Scripts.Core
         private GridPoint firstGridPoint;
         private GridNode[,] _gameBoardNodes;
         private PoolManager _poolManager;
-        private GridFiller _generateItemClass;
-        private GameData _gameData;
+        private GridFiller _gridFiller;
         private EventBus _eventBus;
 
         public LevelData levelData;
@@ -42,7 +41,6 @@ namespace Game.Scripts.Core
             _eventBus.Subscribe<GameEvents.OnPointerUp>(OnPointerUp);
 
             _poolManager = _sceneContext.Resolve<PoolManager>();
-            _gameData = _sceneContext.GetGameData();
 
             LoadLevel();
         }
@@ -157,7 +155,7 @@ namespace Game.Scripts.Core
         public async UniTask FillSequence()
         {
             await ItemFallDown.FallDown(_gameBoard, this, .1f);
-           // await fillClass.Fill(_gameBoard, 1, levelData);
+            await _gridFiller.Fill();
         }
         private bool IsSameSlot(GridPoint slotPosition)
         {
@@ -182,25 +180,19 @@ namespace Game.Scripts.Core
 
             _rowCount = levelData.rowIndex;
             _columnCount = levelData.columnIndex;
+            moveCount = levelData.moveCount;
+            destroyItemCount = levelData.destroyItemCount;
 
             CreateGridTiles(null);
 
-            var rowCount = GetGameBoardNodes().GetLength(0);
-            var columnCount = GetGameBoardNodes().GetLength(1);
-            var itemsPoolCapacity = rowCount * columnCount + Mathf.Max(rowCount, columnCount) * 2;
-
             _gameBoard = new GameBoard();
-            _gameBoard.SetGridSlots(_gameBoardNodes, GetOriginPosition(rowCount, columnCount), _tileSize);
+            _gameBoard.SetGridSlots(_gameBoardNodes, GetOriginPosition(_rowCount, _columnCount), _tileSize);
 
-            _generateItemClass = new GridFiller(_sceneContext,levelData);
-            _generateItemClass.GenerateToAllBoard();
+            _gridFiller = new GridFiller(_sceneContext,levelData);
+            _gridFiller.GenerateToAllBoard();
 
             SetGridFrame();
             SetCamera();
-
-
-            moveCount = levelData.moveCount;
-            destroyItemCount = levelData.destroyItemCount;
 
             _eventBus.Fire(new GameEvents.OnMoveCompleted(moveCount));
             _eventBus.Fire(new GameEvents.OnItemDestroyed(destroyItemCount));

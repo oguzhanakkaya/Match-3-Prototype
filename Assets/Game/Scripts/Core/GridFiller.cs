@@ -43,7 +43,7 @@ public class GridFiller
     {
         await UniTask.Delay(TimeSpan.FromSeconds(.1f));
 
-        List<UniTask> tasks = new List<UniTask>();
+        Jobs jobs=new Jobs();
 
         for (var columnIndex = _gridNode.GetLength(1) - 1; columnIndex >= 0; columnIndex--)
         {
@@ -61,10 +61,10 @@ public class GridFiller
 
                 gridNode.SetItem(item);
 
-                tasks.Add(ItemMovement.MoveItem(item, GetWorldPosition(itemGeneratorPosition.RowIndex, itemGeneratorPosition.ColumnIndex)));
+                jobs.Add(ItemMovement.MoveItem(item, GetWorldPosition(itemGeneratorPosition.RowIndex, itemGeneratorPosition.ColumnIndex)));
             }
         }
-        await UniTask.WhenAll(tasks);
+        await jobs.ExecuteJob();
     }
     protected Vector3 GetWorldPosition(int row,int column)
     {
