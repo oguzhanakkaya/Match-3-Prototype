@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Game.Scripts.Core;
 using Game.Scripts.Core.Interfaces;
@@ -10,20 +8,20 @@ using PoolSystem.Core;
 using UnityEngine;
 public class GridFiller
 {
-    private readonly PoolManager _poolManager;
-    private readonly GameController _gameController;
-    private readonly LevelData _levelData;
-    private readonly GameBoard _gameBoard;
-    private readonly IGridNode[,] _gridNode;
+    private readonly PoolManager        _poolManager;
+    private readonly LevelController    _levelController;
+    private readonly LevelData          _levelData;
+    private readonly GameBoard          _gameBoard;
+    private readonly IGridNode[,]       _gridNode;
 
     private int RowCount,ColumnCount;
     public GridFiller(SceneContext sceneContext,LevelData levelData)
     {
-        _gameController = sceneContext.GetGameController();
         _poolManager = sceneContext.Resolve<PoolManager>();
+        _levelController = sceneContext.Resolve<LevelController>();
         _levelData = levelData;
-        _gridNode = _gameController.GetGameBoardNodes();
-        _gameBoard = _gameController._gameBoard;
+        _gridNode = _levelController.GetGameBoardNodes();
+        _gameBoard = _levelController._gameBoard;
 
         RowCount = _gridNode.GetLength(0);
         ColumnCount = _gridNode.GetLength(1);
@@ -54,7 +52,6 @@ public class GridFiller
     }
     public async UniTask FallDown()
     {
-
         Jobs fallDownJobs = new Jobs();
 
         for (var rowIndex = RowCount - 1; rowIndex >= 0; rowIndex--)
@@ -105,7 +102,7 @@ public class GridFiller
     }
     protected Vector3 GetWorldPosition(int row,int column)
     {
-         return _gameController.GetWorldPosition(row,column);
+         return _levelController.GetWorldPosition(row,column);
     }
     private ItemBase GenerateRandomItem()
     {

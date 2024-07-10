@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using Game.Scripts.Core;
 using Game.Scripts.Core.Interfaces;
 using Match3System.Core.Models;
 public static class ItemFallDown
 {
-    public static async UniTask FallDown(GameBoard _gameBoard,GameController gameController,float delay=0)
+    public static async UniTask FallDown(GameBoard _gameBoard,LevelController levelController,float delay=0)
     {
         await UniTask.Delay(TimeSpan.FromSeconds(delay));
 
@@ -23,7 +22,7 @@ public static class ItemFallDown
                     if (item == null)
                         continue;
 
-                    tasks.Add(ItemMovement.MoveItem(item, gameController.GetWorldPosition(gridPoint.RowIndex, gridPoint.ColumnIndex)));
+                    tasks.Add(ItemMovement.MoveItem(item, levelController.GetWorldPosition(gridPoint.RowIndex, gridPoint.ColumnIndex)));
 
                     _gameBoard[new GridPoint(rowIndex, columnIndex)].Clear();
                     _gameBoard[new GridPoint(gridPoint.RowIndex, gridPoint.ColumnIndex)].SetItem(item);

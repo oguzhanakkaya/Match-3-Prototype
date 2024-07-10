@@ -8,17 +8,16 @@ namespace Game.Scripts.UI
 {
     public class GameView : MonoBehaviour, IGameView
     {
-        [SerializeField]private SceneContext _sceneContext;
+        [SerializeField]private SceneContext    _sceneContext;
         [SerializeField]private TextMeshProUGUI moveCountText, destroyedItemCountText;
-        [SerializeField]private GameObject levelFailedUI, levelCompletedUI;
-        [SerializeField]private Button retryLevelButton, nextLevelButton;
+        [SerializeField]private GameObject      levelFailedUI, levelCompletedUI;
+        [SerializeField]private Button          retryLevelButton, nextLevelButton;
 
-        private GameController gameController;
-        private EventBus _eventBus;
+        private LevelController levelController;
+        private EventBus        _eventBus;
         public void Init()
         {
-
-            gameController = _sceneContext.Resolve<GameController>();
+            levelController = _sceneContext.Resolve<LevelController>();
 
             _eventBus = ServiceLocator.Instance.Resolve<EventBus>();
             _eventBus.Subscribe<GameEvents.OnItemDestroyed>(OnItemDestroy);
@@ -39,12 +38,12 @@ namespace Game.Scripts.UI
         private void NextLevelButtonPressed()
         {
             levelFailedUI.gameObject.SetActive(false);
-            gameController.LoadLevel();
+            levelController.LoadLevel();
         }
         private void RetryButtonPressed()
         {
             levelCompletedUI.gameObject.SetActive(false);
-            gameController.LoadLevel();
+            levelController.LoadLevel();
         }
         private void OnLevelFailed()
         {

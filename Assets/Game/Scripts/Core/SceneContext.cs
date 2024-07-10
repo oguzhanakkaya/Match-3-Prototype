@@ -1,8 +1,6 @@
 using Game.Scripts.Core.Interfaces;
 using Game.Scripts.UI;
 using Game.Scripts.UI.Interfaces;
-using Match3System.Core.Interfaces;
-using PoolSystem;
 using PoolSystem.Core;
 using UnityEngine;
 
@@ -14,6 +12,7 @@ namespace Game.Scripts.Core
         [SerializeField] private InputSystem _inputSystem;
         [SerializeField] private PoolManager _poolManager;
         [SerializeField] private GameController _gameController;
+        [SerializeField] private LevelController _levelController;
         [SerializeField] private GameData gameData;
         public override void Initialize()
         {
@@ -24,13 +23,14 @@ namespace Game.Scripts.Core
             Register<PoolManager>(_poolManager);
             Register(GetGameSession());
             Register(_gameController);
-            Register<IGameBoardDataProvider<IGridNode>>(_gameController);
+            Register<LevelController>(_levelController);
 
             Container.Initialize();
 
             _gameView.Init();
             _gameController.Init();
             _inputSystem.Initialize();
+            _levelController.Init();
         }
 
         private GameSession GetGameSession()

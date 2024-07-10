@@ -4,22 +4,23 @@ using DG.Tweening;
 using Game.Scripts.Core;
 using Match3System.Core.Interfaces;
 using Match3System.Core.Models;
+using Lean.Pool;
 
 public static class GridOperations
 {
     private const float SwapDuration = .2f;
-    public static async UniTask ClearSequence(GameBoard gameBoard, GameController gameController)
+    public static async UniTask ClearSequence(GameBoard gameBoard, GameController gameController,LevelController levelController)
     {
         var matches = MatchSolver.GetMatches(gameBoard, GetLineDetectors());
 
         if (matches.Count > 0)
         {
             ClearMatchedItem(matches, gameBoard,gameController);
-            await gameController._gridFiller.FillSequence();
-            await ClearSequence(gameBoard, gameController);
+            await levelController._gridFiller.FillSequence();
+            await ClearSequence(gameBoard, gameController,levelController);
         }
     }
-    public static async UniTask SwapItemsAsync(GridPoint position1, GridPoint position2, GameBoard gameBoard, GameController gameController)
+    public static async UniTask SwapItemsAsync(GridPoint position1, GridPoint position2, GameBoard gameBoard, GameController gameController,LevelController levelController)
     {
         await SwapGameBoardItemsAsync(position1, position2, gameBoard);
 
@@ -30,11 +31,11 @@ public static class GridOperations
         {
             await gameBoard[position1].Item.Use();
             await gameBoard[position2].Item.Use();
-            await ClearSequence(gameBoard, gameController);
+            await ClearSequence(gameBoard, gameController, levelController);
         }
         else if (MatchSolver.GetMatches(gameBoard, GetLineDetectors()).Count > 0)
         {
-            await ClearSequence(gameBoard, gameController);
+            await ClearSequence(gameBoard, gameController, levelController);
         }
         else
             await SwapGameBoardItemsAsync(position1, position2, gameBoard);
@@ -85,7 +86,7 @@ public static class GridOperations
         gameController.StartParticle(grid);
         gameController.DecreaseItemDestroyCount();
 
-        Lean.Pool.LeanPool.Despawn((UnityEngine.Component)grid.Item);
+        LeanPool.Despawn((UnityEngine.Component)grid.Item);
         grid.Item.Hide();
         grid.Clear();
     }
