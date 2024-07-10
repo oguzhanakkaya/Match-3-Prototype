@@ -1,9 +1,6 @@
 using Cysharp.Threading.Tasks;
-using Game.Scripts.Core.DependencyInjection;
 using Game.Scripts.Core.Interfaces;
-using Match3System.Core.Models;
 using PoolSystem;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Game.Scripts.Core
@@ -52,7 +49,7 @@ namespace Game.Scripts.Core
         {
             transform.localScale = new Vector3(value, value, value);
         }
-        public virtual void Use()
+        public async UniTask Use()
         {
 
         }

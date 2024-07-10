@@ -28,9 +28,8 @@ public static class GridOperations
 
         if (item1Usable || item2Usable)
         {
-            gameBoard[position1].Item.Use();
-            gameBoard[position2].Item.Use();
-
+            await gameBoard[position1].Item.Use();
+            await gameBoard[position2].Item.Use();
             await ClearSequence(gameBoard, gameController);
         }
         else if (MatchSolver.GetMatches(gameBoard, GetLineDetectors()).Count > 0)
@@ -86,7 +85,6 @@ public static class GridOperations
         gameController.StartParticle(grid);
         gameController.DecreaseItemDestroyCount();
 
-       
         Lean.Pool.LeanPool.Despawn((UnityEngine.Component)grid.Item);
         grid.Item.Hide();
         grid.Clear();

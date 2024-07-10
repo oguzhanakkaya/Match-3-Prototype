@@ -1,5 +1,4 @@
 using Cysharp.Threading.Tasks;
-using Match3System.Core.Models;
 using UnityEngine;
 
 namespace Game.Scripts.Core.Interfaces
@@ -20,6 +19,6 @@ namespace Game.Scripts.Core.Interfaces
         Vector3 GetPosition();
         void SetScale(float value);
 
-        void Use();
+        UniTask Use();
     }
 }

@@ -1,14 +1,7 @@
-using Cysharp.Threading.Tasks;
-using Game.Scripts.Core;
-using Game.Scripts.Core.Interfaces;
 using Match3System.Core.Interfaces;
 using Match3System.Core.Models;
-using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
-using UnityEditor.VersionControl;
-using static UnityEditor.Progress;
 
 public static class MatchSolver
 {
@@ -18,12 +11,11 @@ public static class MatchSolver
         matchedItemsList.Clear();
 
         foreach (var item in lines)
-            SetMatchesWithDirections(_gameBoard,item.lineDirections);
+            CheckMatches(_gameBoard,item.lineDirections);
 
         return matchedItemsList;
     }
-
-    private static void SetMatchesWithDirections(GameBoard _gameBoard, GridPoint[] _lineDirections)
+    private static void CheckMatches(GameBoard _gameBoard, GridPoint[] _lineDirections)
     {
         for (var rowIndex = 0; rowIndex < _gameBoard.RowCount; rowIndex++)
         {
@@ -41,10 +33,8 @@ public static class MatchSolver
                     matchedGridPoint.Add(point);
 
                     foreach (var item in _lineDirections)
-                    {
                         matchedGridPoint.Add(point + item);
-                    }
-                    //  matchedItems.Add(new MatchedItems<IGridNode>(_gameBoard[point].Item.ItemType, matchedGridPoint));
+
                     AddMatchToList(new MatchedItems<IGridNode>(_gameBoard[point].Item.ItemType, matchedGridPoint));
                 }
             }
@@ -54,13 +44,12 @@ public static class MatchSolver
     {
         foreach (var child in matchedItemsList)
         {
-            if (CheckSameItemOnList(child,matchedItem))
+            if (CheckSameMatchItemOnList(child,matchedItem))
             {
                 AddItemsToPreviousMatchList(child, matchedItem);
                 return;
             }
         }
-      //  GameController.Instance.DebugWrite(item.RowIndex + " " + item.ColumnIndex);
         matchedItemsList.Add(matchedItem);
     }
     private static void AddItemsToPreviousMatchList(MatchedItems<IGridNode> currentListItem, MatchedItems<IGridNode> newItem)
@@ -69,7 +58,7 @@ public static class MatchSolver
             if (!currentListItem.itemsList.Any(x => x.Equals(item)))
                 currentListItem.itemsList.Add(item);  
     }
-    private static bool CheckSameItemOnList(MatchedItems<IGridNode> currentListItem, MatchedItems<IGridNode> newItem)
+    private static bool CheckSameMatchItemOnList(MatchedItems<IGridNode> currentListItem, MatchedItems<IGridNode> newItem)
     {
         foreach (var item in newItem.itemsList)
             if (currentListItem.itemsList.Any(x => x.Equals(item)))    
