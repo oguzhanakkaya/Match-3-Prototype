@@ -31,7 +31,6 @@ public class LevelController : MonoBehaviour
 
         LoadLevel();
     }
-
     public async void LoadLevel()
     {
         LeanPool.DespawnAll();
