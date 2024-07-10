@@ -40,27 +40,27 @@ public static class MatchSolver
             }
         }
     }
-    private static void AddMatchToList(MatchedItems<IGridNode> matchedItem)
+    private static void AddMatchToList(MatchedItems<IGridNode> newMatch)
     {
         foreach (var child in matchedItemsList)
         {
-            if (CheckSameMatchItemOnList(child,matchedItem))
+            if (CheckMatchedItemOnPreviousMatch(child,newMatch))
             {
-                AddItemsToPreviousMatchList(child, matchedItem);
+                AddItemsToPreviousMatchList(child, newMatch);
                 return;
             }
         }
-        matchedItemsList.Add(matchedItem);
+        matchedItemsList.Add(newMatch);
     }
-    private static void AddItemsToPreviousMatchList(MatchedItems<IGridNode> currentListItem, MatchedItems<IGridNode> newItem)
+    private static void AddItemsToPreviousMatchList(MatchedItems<IGridNode> currentListItem, MatchedItems<IGridNode> newMatch)
     {
-        foreach (var item in newItem.itemsList)
+        foreach (var item in newMatch.itemsList)
             if (!currentListItem.itemsList.Any(x => x.Equals(item)))
                 currentListItem.itemsList.Add(item);  
     }
-    private static bool CheckSameMatchItemOnList(MatchedItems<IGridNode> currentListItem, MatchedItems<IGridNode> newItem)
+    private static bool CheckMatchedItemOnPreviousMatch(MatchedItems<IGridNode> currentListItem, MatchedItems<IGridNode> newMatch)
     {
-        foreach (var item in newItem.itemsList)
+        foreach (var item in newMatch.itemsList)
             if (currentListItem.itemsList.Any(x => x.Equals(item)))    
                 return true;
         return false;
