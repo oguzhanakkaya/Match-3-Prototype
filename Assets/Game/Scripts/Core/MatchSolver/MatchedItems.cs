@@ -7,9 +7,9 @@ public class MatchedItems<TGridSlot> where TGridSlot : IGridNode
     public MatchedItems(int itemType, List<GridPoint> matchedGridPoint)
     {
         this.itemType = itemType;
-        this.matchedItems = matchedGridPoint;
+        this.itemsList = matchedGridPoint;
     }
 
     public int itemType { get; }
-    public List<GridPoint> matchedItems { get; set; }
+    public List<GridPoint> itemsList { get; set; }
 }

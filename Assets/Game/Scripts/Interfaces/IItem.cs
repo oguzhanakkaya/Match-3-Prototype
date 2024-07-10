@@ -7,6 +7,7 @@ namespace Game.Scripts.Core.Interfaces
     public interface IItem
     {
         int ItemType { get; }
+        bool IsUsableItem { get; }
 
         Transform Transform { get; }
         SpriteRenderer SpriteRenderer { get; }

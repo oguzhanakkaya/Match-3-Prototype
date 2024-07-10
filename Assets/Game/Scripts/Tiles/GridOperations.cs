@@ -23,7 +23,17 @@ public static class GridOperations
     {
         await SwapGameBoardItemsAsync(position1, position2, gameBoard);
 
-        if (MatchSolver.GetMatches(gameBoard, GetLineDetectors()).Count > 0)
+        var item1Usable = gameBoard[position1].Item.IsUsableItem;
+        var item2Usable = gameBoard[position2].Item.IsUsableItem;
+
+        if (item1Usable || item2Usable)
+        {
+            gameBoard[position1].Item.Use();
+            gameBoard[position2].Item.Use();
+
+            await ClearSequence(gameBoard, gameController);
+        }
+        else if (MatchSolver.GetMatches(gameBoard, GetLineDetectors()).Count > 0)
         {
             await ClearSequence(gameBoard, gameController);
         }
@@ -62,7 +72,7 @@ public static class GridOperations
     {
         foreach (var item in matchedItemsList)
         {
-            foreach (var item2 in item.matchedItems)
+            foreach (var item2 in item.itemsList)
             {
                 ClearTile(_gameBoard[item2],gameController);
             }

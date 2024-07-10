@@ -13,6 +13,7 @@ namespace Game.Scripts.Core
 {
     public class GameController : MonoBehaviour, IGameBoardDataProvider<IGridNode>
     {
+        public static GameController Instance { get; private set; }
         [SerializeField] private SceneContext _sceneContext;
         [SerializeField] private InputSystem _inputSystem;
         [SerializeField] private SpriteRenderer gridFrame;
@@ -35,6 +36,8 @@ namespace Game.Scripts.Core
 
         public async void Init()
         {
+            Instance = this;
+
             _eventBus = ServiceLocator.Instance.Resolve<EventBus>();
 
             _eventBus.Subscribe<GameEvents.OnPointerDown>(OnPointerDown);
@@ -195,6 +198,10 @@ namespace Game.Scripts.Core
             isLevelEnded = false;
 
             await GridOperations.ClearSequence(_gameBoard, this);
+        }
+        public void DebugWrite(string s)
+        {
+            Debug.LogError(s);
         }
     }
 }
