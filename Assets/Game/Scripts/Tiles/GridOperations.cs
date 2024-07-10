@@ -72,10 +72,9 @@ public static class GridOperations
     {
         foreach (var item in matchedItemsList)
         {
+            // You can create a special item (Rocket etc.) by checking at the number of items listed here.
             foreach (var item2 in item.itemsList)
-            {
                 ClearTile(_gameBoard[item2],gameController);
-            }
         }
     }
     private static void ClearTile(IGridNode grid, GameController gameController)
