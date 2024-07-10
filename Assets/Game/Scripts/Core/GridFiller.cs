@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Game.Scripts.Core;
+using Game.Scripts.Core.Interfaces;
 using Lean.Pool;
 using Match3System.Core.Interfaces;
 using Match3System.Core.Models;
@@ -12,19 +13,31 @@ public class GridFiller
     private readonly PoolManager _poolManager;
     private readonly GameController _gameController;
     private readonly LevelData _levelData;
+    private readonly GameBoard _gameBoard;
     private readonly IGridNode[,] _gridNode;
+
+    private int RowCount,ColumnCount;
     public GridFiller(SceneContext sceneContext,LevelData levelData)
     {
         _gameController = sceneContext.GetGameController();
         _poolManager = sceneContext.Resolve<PoolManager>();
         _levelData = levelData;
         _gridNode = _gameController.GetGameBoardNodes();
+        _gameBoard = _gameController._gameBoard;
+
+        RowCount = _gridNode.GetLength(0);
+        ColumnCount = _gridNode.GetLength(1);
+    }
+    public async UniTask FillSequence()
+    {
+        await FallDown();
+        await Fill();
     }
     public void GenerateToAllBoard()
     {
-        for (int rowIndex = 0; rowIndex < _gridNode.GetLength(0); rowIndex++)
+        for (int rowIndex = 0; rowIndex < RowCount; rowIndex++)
         {
-            for (int columnIndex = 0; columnIndex < _gridNode.GetLength(1); columnIndex++)
+            for (int columnIndex = 0; columnIndex < ColumnCount; columnIndex++)
             {
                 IGridNode gridNode = _gridNode[rowIndex,columnIndex];
 
@@ -39,10 +52,34 @@ public class GridFiller
             }
         }
     }
+    public async UniTask FallDown()
+    {
+
+        Jobs fallDownJobs = new Jobs();
+
+        for (var rowIndex = RowCount - 1; rowIndex >= 0; rowIndex--)
+        {
+            for (var columnIndex = ColumnCount - 1; columnIndex >= 0; columnIndex--)
+            {
+                if (CanMoveDown(new GridPoint(rowIndex, columnIndex), out GridPoint gridPoint, _gameBoard))
+                {
+                    IItem item = _gridNode[rowIndex,columnIndex].Item;
+
+                    if (item == null)
+                        continue;
+
+                    fallDownJobs.Add(ItemMovement.MoveItem(item,GetWorldPosition(gridPoint.RowIndex, gridPoint.ColumnIndex)));
+
+                    _gridNode[rowIndex, columnIndex].Clear();
+                    _gridNode[gridPoint.RowIndex, gridPoint.ColumnIndex].SetItem(item);
+                }
+            }
+        }
+        await fallDownJobs.ExecuteJob();
+        await Fill();
+    }
     public async UniTask Fill()
     {
-        await UniTask.Delay(TimeSpan.FromSeconds(.1f));
-
         Jobs jobs=new Jobs();
 
         for (var columnIndex = _gridNode.GetLength(1) - 1; columnIndex >= 0; columnIndex--)
@@ -90,6 +127,30 @@ public class GridFiller
             rowIndex--;
         }
         return new GridPoint(-1, columnIndex);
+    }
+    public static bool CanMoveDown(GridPoint point, out GridPoint gridPosition, GameBoard _gameBoard)
+    {
+        bool canMoveDown = false;
+        gridPosition = point;
+
+        for (int i = 0; i < _gameBoard.RowCount; i++)
+        {
+            if (CanDropDown(_gameBoard, gridPosition))
+            {
+                canMoveDown = true;
+
+                gridPosition += GridPoint.Down;
+
+            }
+        }
+        return canMoveDown;
+    }
+    private static bool CanDropDown(GameBoard gameBoard, GridPoint point)
+    {
+        GridPoint gridPosition = point + GridPoint.Down;
+
+        return gameBoard.IsPositionOnGrid(gridPosition) &&
+            !gameBoard[new GridPoint(gridPosition.RowIndex, gridPosition.ColumnIndex)].HasItem;
     }
 }
 

@@ -15,7 +15,7 @@ public static class GridOperations
         if (matches.Count > 0)
         {
             ClearMatchedItem(matches, gameBoard,gameController);
-            await gameController.FillSequence();
+            await gameController._gridFiller.FillSequence();
             await ClearSequence(gameBoard, gameController);
         }
     }
@@ -76,6 +76,8 @@ public static class GridOperations
         gameController.StartParticle(grid);
         gameController.DecreaseItemDestroyCount();
 
+       
+        Lean.Pool.LeanPool.Despawn((UnityEngine.Component)grid.Item);
         grid.Item.Hide();
         grid.Clear();
     }

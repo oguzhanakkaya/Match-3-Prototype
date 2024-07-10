@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class Jobs 
 {
-    List<UniTask> tasks = new List<UniTask>();
+    public List<UniTask> tasks = new List<UniTask>();
 
     public void Add(UniTask task)
     {

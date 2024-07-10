@@ -27,11 +27,11 @@ namespace Game.Scripts.Core
         private GridPoint firstGridPoint;
         private GridNode[,] _gameBoardNodes;
         private PoolManager _poolManager;
-        private GridFiller _gridFiller;
         private EventBus _eventBus;
 
         public LevelData levelData;
         public GameBoard _gameBoard;
+        public GridFiller _gridFiller;
 
         public async void Init()
         {
@@ -151,11 +151,6 @@ namespace Game.Scripts.Core
         public void StartParticle(IGridNode grid)
         {
            // _particleGenerator.GetItem().StartParticle(_gameData.GetParticleColorFromItemType(0), grid.Item.GetPosition());
-        }
-        public async UniTask FillSequence()
-        {
-            await ItemFallDown.FallDown(_gameBoard, this, .1f);
-            await _gridFiller.Fill();
         }
         private bool IsSameSlot(GridPoint slotPosition)
         {
