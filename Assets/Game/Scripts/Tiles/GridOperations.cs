@@ -25,9 +25,14 @@ public class GridOperations
 
         if (matches.Count > 0)
         {
+            _gameController.isSequenceEnded = false;
+
             await ClearMatchedItem(matches);
             await ClearSequence();
         }
+        _gameController.isSequenceEnded = true;
+
+
     }
     public async UniTask SwapItemsAsync(GridPoint position1, GridPoint position2)
     {

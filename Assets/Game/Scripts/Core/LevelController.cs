@@ -5,8 +5,7 @@ using UnityEngine;
 using PoolSystem.Core;
 using Match3System.Core.Models;
 using Match3System.Core.Interfaces;
-using System.Linq;
-using UnityEngine.Playables;
+using DG.Tweening;
 
 public class LevelController : MonoBehaviour
 {

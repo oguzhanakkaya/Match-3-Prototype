@@ -39,12 +39,12 @@ public class GameEvents : MonoBehaviour
     public struct OnLevelFailed : IEvent { }
     public struct OnLevelLoaded : IEvent{
 
-        public int moveCount,destroyItemCount;
+        public int moveCount,targetDestroyItemCount;
 
         public OnLevelLoaded(int moveCount, int destroyItemCount)
         {
             this.moveCount = moveCount;
-            this.destroyItemCount = destroyItemCount;
+            this.targetDestroyItemCount = destroyItemCount;
         }
     }
     public struct OnLevelStarted : IEvent {}

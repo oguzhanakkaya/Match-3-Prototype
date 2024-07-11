@@ -1,4 +1,6 @@
+using Cysharp.Threading.Tasks;
 using Match3System.Core.Models;
+using System;
 using UnityEngine;
 
 namespace Game.Scripts.Core
@@ -10,10 +12,14 @@ namespace Game.Scripts.Core
         [SerializeField] private LevelController    levelController;
 
         private bool        isLevelEnded;
-        private int         moveCount,destroyItemCount;
+        private int         _moveCount;
+        private int         _destroyItemCount;
+        private int         _targetDestroyItemCount;
         private GridPoint   firstGridPoint;
         private EventBus    _eventBus;
         private GameBoard   _gameBoard;
+
+        public bool isSequenceEnded;
         public async void Init()
         {
             _eventBus = ServiceLocator.Instance.Resolve<EventBus>();
@@ -28,37 +34,43 @@ namespace Game.Scripts.Core
         }
         private void OnLevelLoaded(GameEvents.OnLevelLoaded p)
         {
-            moveCount = p.moveCount;
-            destroyItemCount = p.destroyItemCount;
+            _moveCount = p.moveCount;
+            _destroyItemCount = 0;
+            _targetDestroyItemCount = p.targetDestroyItemCount;
 
             _gameBoard = levelController._gameBoard;
-
-            _eventBus.Fire(new GameEvents.OnMoveCompleted(moveCount));
-            _eventBus.Fire(new GameEvents.OnItemDestroyed(destroyItemCount));
 
             isLevelEnded = false;
         }
         private void DecreaseMoveCount()
         {
-            moveCount--;
-            _eventBus.Fire(new GameEvents.OnMoveCompleted(moveCount));
+            _moveCount--;
+            _eventBus.Fire(new GameEvents.OnMoveCompleted(_moveCount));
 
-            if (moveCount<=0 && !isLevelEnded)
+            if (_moveCount <= 0 && !isLevelEnded)
             {
                 isLevelEnded = true;
                 _eventBus.Fire(new GameEvents.OnLevelFailed());
             }
         }
-        public void DecreaseItemDestroyCount()
+        public async void DecreaseItemDestroyCount()
         {
-            destroyItemCount--;
-            _eventBus.Fire(new GameEvents.OnItemDestroyed(destroyItemCount));
+            _destroyItemCount++;
+            _eventBus.Fire(new GameEvents.OnItemDestroyed(_destroyItemCount));
 
-            if (destroyItemCount <= 0 && !isLevelEnded)
+            if (_destroyItemCount >= _targetDestroyItemCount && !isLevelEnded)
             {
                 isLevelEnded = true;
-                _eventBus.Fire(new GameEvents.OnLevelCompleted());
+                await FireLevelFailedEvent();
+
             }
+        }
+        private async UniTask FireLevelFailedEvent()
+        {
+            await UniTask.WaitUntil(() => isSequenceEnded == true);
+            await UniTask.Delay(TimeSpan.FromSeconds(.5f));
+            _eventBus.Fire(new GameEvents.OnLevelCompleted());
+
         }
         private void OnPointerDown(GameEvents.OnPointerDown pointer)
         {
