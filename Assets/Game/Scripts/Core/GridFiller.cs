@@ -29,7 +29,7 @@ public class GridFiller
     public async UniTask FillSequence(int columnIndex)
     {
         await FallDown(columnIndex);
-     //   await Fill();
+        await Fill(columnIndex);
     }
     public void GenerateToAllBoard()
     {
@@ -53,6 +53,7 @@ public class GridFiller
     public async UniTask FallDown(int columnIndex)
     {
         Jobs fallDownJobs = new Jobs();
+        Jobs fillJobs = new Jobs();
 
         for (var rowIndex = RowCount - 1; rowIndex >= 0; rowIndex--)
         {
@@ -67,33 +68,30 @@ public class GridFiller
 
                     _gridNode[rowIndex, columnIndex].Clear();
                     _gridNode[gridPoint.RowIndex, gridPoint.ColumnIndex].SetItem(item);
+
                 }
         }
         await fallDownJobs.ExecuteJob();
-        await Fill();
     }
-    public async UniTask Fill()
+    public async UniTask Fill(int columnIndex)
     {
-        Jobs jobs=new Jobs();
+        Jobs jobs = new Jobs();
 
-        for (var columnIndex = _gridNode.GetLength(1) - 1; columnIndex >= 0; columnIndex--)
+        for (var rowIndex = RowCount - 1; rowIndex >= 0; rowIndex--)
         {
-            for (var rowIndex = _gridNode.GetLength(0) - 1; rowIndex >= 0; rowIndex--)
-            {
-                IGridNode gridNode = _gridNode[rowIndex, columnIndex];
+            IGridNode gridNode = _gridNode[rowIndex, columnIndex];
 
-                if (gridNode.HasItem || !_levelData.spawners[columnIndex])
-                    continue;
+            if (gridNode.HasItem || !_levelData.spawners[columnIndex])
+                continue;
 
-                var item = GenerateRandomItem();
-                GridPoint itemGeneratorPosition = GetItemGeneratorPosition(rowIndex, columnIndex);
-                item.SetPosition(GetWorldPosition(itemGeneratorPosition.RowIndex - 2, itemGeneratorPosition.ColumnIndex));
-                item.Show();
+            var item = GenerateRandomItem();
+            GridPoint itemGeneratorPosition = GetItemGeneratorPosition(rowIndex, columnIndex);
+            item.SetPosition(GetWorldPosition(itemGeneratorPosition.RowIndex - 2, itemGeneratorPosition.ColumnIndex));
+            item.Show();
 
-                gridNode.SetItem(item);
+            gridNode.SetItem(item);
 
-                jobs.Add(ItemMovement.MoveItem(item, GetWorldPosition(itemGeneratorPosition.RowIndex, itemGeneratorPosition.ColumnIndex)));
-            }
+            jobs.Add(ItemMovement.MoveItem(item, GetWorldPosition(itemGeneratorPosition.RowIndex, itemGeneratorPosition.ColumnIndex)));
         }
         await jobs.ExecuteJob();
     }
