@@ -26,10 +26,10 @@ public class GridFiller
         RowCount = _gridNode.GetLength(0);
         ColumnCount = _gridNode.GetLength(1);
     }
-    public async UniTask FillSequence()
+    public async UniTask FillSequence(int columnIndex)
     {
-        await FallDown();
-        await Fill();
+        await FallDown(columnIndex);
+     //   await Fill();
     }
     public void GenerateToAllBoard()
     {
@@ -50,14 +50,12 @@ public class GridFiller
             }
         }
     }
-    public async UniTask FallDown()
+    public async UniTask FallDown(int columnIndex)
     {
         Jobs fallDownJobs = new Jobs();
 
         for (var rowIndex = RowCount - 1; rowIndex >= 0; rowIndex--)
         {
-            for (var columnIndex = ColumnCount - 1; columnIndex >= 0; columnIndex--)
-            {
                 if (CanMoveDown(new GridPoint(rowIndex, columnIndex), out GridPoint gridPoint, _gameBoard))
                 {
                     IItem item = _gridNode[rowIndex,columnIndex].Item;
@@ -70,7 +68,6 @@ public class GridFiller
                     _gridNode[rowIndex, columnIndex].Clear();
                     _gridNode[gridPoint.RowIndex, gridPoint.ColumnIndex].SetItem(item);
                 }
-            }
         }
         await fallDownJobs.ExecuteJob();
         await Fill();

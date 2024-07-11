@@ -5,6 +5,7 @@ using Game.Scripts.Core;
 using Match3System.Core.Interfaces;
 using Match3System.Core.Models;
 using Lean.Pool;
+using System.Threading;
 
 public static class GridOperations
 {
@@ -15,12 +16,12 @@ public static class GridOperations
 
         if (matches.Count > 0)
         {
-            ClearMatchedItem(matches, gameBoard,gameController);
-            await levelController._gridFiller.FillSequence();
+            await ClearMatchedItem(matches, gameBoard,gameController,levelController);
             await ClearSequence(gameBoard, gameController,levelController);
         }
     }
-    public static async UniTask SwapItemsAsync(GridPoint position1, GridPoint position2, GameBoard gameBoard, GameController gameController,LevelController levelController)
+    public static async UniTask SwapItemsAsync(GridPoint position1, GridPoint position2, 
+        GameBoard gameBoard, GameController gameController,LevelController levelController)
     {
         await SwapGameBoardItemsAsync(position1, position2, gameBoard);
 
@@ -68,14 +69,21 @@ public static class GridOperations
         gridSlot1.SetItem(item2);
         gridSlot2.SetItem(item1);
     }
-    public static void ClearMatchedItem(List<MatchedItems<IGridNode>> matchedItemsList,GameBoard _gameBoard, GameController gameController)
+    public static async UniTask ClearMatchedItem(List<MatchedItems<IGridNode>> matchedItemsList,GameBoard _gameBoard, 
+        GameController gameController,LevelController levelController)
     {
+        Jobs jobs = new Jobs();
         foreach (var item in matchedItemsList)
         {
             // You can create a special item (Rocket etc.) by checking at the number of items listed here.
             foreach (var item2 in item.itemsList)
-                ClearTile(_gameBoard[item2],gameController);
+            {
+                ClearTile(_gameBoard[item2], gameController);
+                jobs.Add(levelController._gridFiller.FillSequence(item2.ColumnIndex));
+            }
+           
         }
+        await jobs.ExecuteJob();
     }
     private static void ClearTile(IGridNode grid, GameController gameController)
     {

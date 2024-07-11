@@ -7,7 +7,8 @@ public class Jobs
 
     public void Add(UniTask task)
     {
-        tasks.Add(task);
+        if (!tasks.Contains(task))
+            tasks.Add(task);
     }
     public async UniTask ExecuteJob()
     {
