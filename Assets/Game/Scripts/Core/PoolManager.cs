@@ -10,17 +10,15 @@ namespace PoolSystem.Core
     {
         public List<PoolData> _poolDataList;
 
+        public ParticleObject _particleObject;
+
         public Component GetComponentFromID(string id)
         {
             return _poolDataList.First(i => i.PrefabId == id).Prefab;
         }
-        public Component GetParticle()
+        public ParticleObject GetParticle()
         {
-            var obj=_poolDataList.First(x=>x.PrefabId== "particle_object").Prefab;
-            LeanPool.Spawn(obj);
-
-            return null;
-         //   return (ParticleObject)obj;
+            return LeanPool.Spawn(_particleObject);
         }
     }
 }

@@ -454,8 +454,7 @@ MonoBehaviour:
     Prefab: {fileID: 5399523649903418736, guid: bdb078ecc99f4fa4d91ce8335e5fc88f, type: 3}
   - PrefabId: tile_basic
     Prefab: {fileID: 2388917405439323630, guid: 99b023b789f61e14f9cdaaacecb4044f, type: 3}
-  - PrefabId: particle_object
-    Prefab: {fileID: 5695124154754805895, guid: be3971cd0fae54c45b789050b7c70028, type: 3}
+  _particleObject: {fileID: 5695124154754805895, guid: be3971cd0fae54c45b789050b7c70028, type: 3}
 --- !u!4 &213516654
 Transform:
   m_ObjectHideFlags: 0

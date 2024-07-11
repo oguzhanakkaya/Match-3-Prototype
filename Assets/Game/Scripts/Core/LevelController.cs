@@ -70,8 +70,7 @@ public class LevelController : MonoBehaviour
     }
     public void StartParticle(IGridNode grid)
     {
-      /*  var obj = LeanPool.Spawn(_poolManager._poolDataList.First(x => x.PrefabId == "particle_object").Prefab);
-        ((ParticleObject)obj).StartParticle(_gameData.GetParticleColorFromItemType(grid.Item.PrefabId), grid.Item.GetPosition()); ;*/
+       _poolManager.GetParticle().StartParticle(_gameData.GetParticleColorFromItemType(grid.Item.PrefabId), grid.Item.GetPosition());
     }
     private void CreateGridTiles(int[,] data)
     {

@@ -2,6 +2,7 @@ using Game.Scripts.Core;
 using Game.Scripts.UI.Interfaces;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Game.Scripts.UI
@@ -38,12 +39,14 @@ namespace Game.Scripts.UI
         private void NextLevelButtonPressed()
         {
             levelFailedUI.gameObject.SetActive(false);
-            levelController.LoadLevel();
+            //  levelController.LoadLevel();
+            SceneManager.LoadScene(0);
         }
         private void RetryButtonPressed()
         {
             levelCompletedUI.gameObject.SetActive(false);
-            levelController.LoadLevel();
+            SceneManager.LoadScene(0);
+            //  levelController.LoadLevel();
         }
         private void OnLevelFailed()
         {
