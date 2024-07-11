@@ -9,6 +9,7 @@ public class GameBoard
     public float    tileSize { get; set; }
     public Vector3  _originPosition { get; set; }
 
+
     private IGridNode[,] _gridSlots;
 
     public void SetGridSlots(IGridNode[,] gridSlots,Vector3 originPos,float tileSize)

@@ -42,14 +42,12 @@ namespace Game.Scripts.UI
         private void NextLevelButtonPressed()
         {
             levelFailedUI.gameObject.SetActive(false);
-              levelController.LoadLevel();
-           // SceneManager.LoadScene(0);
+            levelController.LoadLevel();
         }
         private void RetryButtonPressed()
         {
             levelCompletedUI.gameObject.SetActive(false);
-            //SceneManager.LoadScene(0);
-              levelController.LoadLevel();
+            levelController.LoadLevel();
         }
         private void OnLevelFailed()
         {
