@@ -22,6 +22,7 @@ public class LevelController : MonoBehaviour
     private PoolManager _poolManager;
     private EventBus    _eventBus;
 
+    public Transform        _boardTransform;
     public LevelData        _levelData;
     public GameData         _gameData;
     public GameBoard        _gameBoard;
@@ -67,6 +68,11 @@ public class LevelController : MonoBehaviour
     {
         return new Vector3(columnIndex, -rowIndex) * _tileSize + _originPosition;
     }
+    public void StartParticle(IGridNode grid)
+    {
+      /*  var obj = LeanPool.Spawn(_poolManager._poolDataList.First(x => x.PrefabId == "particle_object").Prefab);
+        ((ParticleObject)obj).StartParticle(_gameData.GetParticleColorFromItemType(grid.Item.PrefabId), grid.Item.GetPosition()); ;*/
+    }
     private void CreateGridTiles(int[,] data)
     {
         _gameBoardNodes = new GridNode[_rowCount, _columnCount];
@@ -108,7 +114,7 @@ public class LevelController : MonoBehaviour
     }
     private IGridTile GetTile()
     {
-        return LeanPool.Spawn(_poolManager.GetComponentFromID("tile_basic")).GetComponent<IGridTile>();
+        return LeanPool.Spawn(_poolManager.GetComponentFromID("tile_basic"),_boardTransform).GetComponent<IGridTile>();
     }
     private Vector3 GetCenterPoint()
     {
@@ -116,13 +122,5 @@ public class LevelController : MonoBehaviour
         var pos2 = GetWorldPosition(_rowCount - 1, 0) + GetWorldPosition(_rowCount - 1, _columnCount - 1);
 
         return new Vector3(pos2.x * .5f, pos1.y * .5f, 0);
-    }
-    public void StartParticle(IGridNode grid)
-    {
-        var obj=_poolManager._poolDataList.First(x => x.PrefabId == "particle_object").Prefab;
-        LeanPool.Spawn(obj);
-
-        ((ParticleObject)obj).StartParticle(_gameData.GetParticleColorFromItemType(grid.Item.PrefabId), grid.Item.GetPosition()); ;
-
     }
 }

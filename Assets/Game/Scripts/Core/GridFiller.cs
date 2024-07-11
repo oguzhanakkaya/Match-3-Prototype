@@ -12,6 +12,7 @@ public class GridFiller
     private readonly LevelController    _levelController;
     private readonly LevelData          _levelData;
     private readonly GameBoard          _gameBoard;
+    private readonly Transform          _boardTransform;
     private readonly IGridNode[,]       _gridNode;
 
     private int RowCount,ColumnCount;
@@ -22,6 +23,7 @@ public class GridFiller
         _levelData = levelData;
         _gridNode = _levelController.GetGameBoardNodes();
         _gameBoard = _levelController._gameBoard;
+        _boardTransform = _levelController._boardTransform;
 
         RowCount = _gridNode.GetLength(0);
         ColumnCount = _gridNode.GetLength(1);
@@ -102,11 +104,7 @@ public class GridFiller
     private ItemBase GenerateRandomItem()
     {
         int i = UnityEngine.Random.Range(0, _levelData.levelItems.Count);
-        return LeanPool.Spawn(_levelData.levelItems[i]);
-    }
-    private ItemBase GenerateItemById(string id)
-    {
-        return LeanPool.Spawn(_poolManager.GetComponentFromID(id)).GetComponent<ItemBase>();
+        return LeanPool.Spawn(_levelData.levelItems[i],_boardTransform);
     }
     private GridPoint GetItemGeneratorPosition( int rowIndex, int columnIndex)
     {
