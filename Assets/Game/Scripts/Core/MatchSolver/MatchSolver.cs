@@ -35,7 +35,7 @@ public static class MatchSolver
                     foreach (var item in _lineDirections)
                         matchedGridPoint.Add(point + item);
 
-                    AddMatchToList(new MatchedItems<IGridNode>(_gameBoard[point].Item.ItemType, matchedGridPoint));
+                    AddMatchToList(new MatchedItems<IGridNode>(_gameBoard[point].Item.PrefabId, matchedGridPoint));
                 }
             }
         }
@@ -86,8 +86,8 @@ public static class MatchSolver
     {
         foreach (var item in _lineDirections)
         {
-            if (_gameBoard[point].Item.ItemType != 
-                _gameBoard[point+item].Item.ItemType)
+            if (_gameBoard[point].Item.PrefabId != 
+                _gameBoard[point+item].Item.PrefabId)
                 return false;
         }
         return true;

@@ -4,11 +4,13 @@ using Match3System.Core.Models;
 using UnityEngine;
 public class GameBoard
 {
+    public int      RowCount { get; set; }
+    public int      ColumnCount { get; set; }
+    public float    tileSize { get; set; }
+    public Vector3  _originPosition { get; set; }
+
     private IGridNode[,] _gridSlots;
-    public int RowCount { get; set; }
-    public int ColumnCount { get; set; }
-    public float tileSize { get; set; }
-    public Vector3 _originPosition { get; set; }
+
     public void SetGridSlots(IGridNode[,] gridSlots,Vector3 originPos,float tileSize)
     {
         RowCount = gridSlots.GetLength(0);

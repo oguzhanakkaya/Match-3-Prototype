@@ -1,4 +1,3 @@
-using Match3System.Core.Interfaces;
 using Match3System.Core.Models;
 using UnityEngine;
 
@@ -6,7 +5,6 @@ namespace Game.Scripts.Core
 {
     public class GameController : MonoBehaviour
     {
-        public static GameController Instance { get; private set; }
         [SerializeField] private SceneContext       _sceneContext;
         [SerializeField] private InputSystem        _inputSystem;
         [SerializeField] private LevelController    levelController;
@@ -18,8 +16,6 @@ namespace Game.Scripts.Core
         private GameBoard   _gameBoard;
         public async void Init()
         {
-            Instance = this;
-
             _eventBus = ServiceLocator.Instance.Resolve<EventBus>();
             _eventBus.Subscribe<GameEvents.OnPointerDown>(OnPointerDown);
             _eventBus.Subscribe<GameEvents.OnPointerUp>(OnPointerUp);
@@ -76,11 +72,7 @@ namespace Game.Scripts.Core
                     return;
                 
                 DecreaseMoveCount();
-                await GridOperations.SwapItemsAsync(firstGridPoint, point, levelController._gameBoard, this,levelController);        
-        }
-        public void StartParticle(IGridNode grid)
-        {
-           // _particleGenerator.GetItem().StartParticle(_gameData.GetParticleColorFromItemType(0), grid.Item.GetPosition());
+                await levelController._gridOperarations.SwapItemsAsync(firstGridPoint, point);        
         }
         private bool IsSameSlot(GridPoint slotPosition)
         {
@@ -96,10 +88,6 @@ namespace Game.Scripts.Core
         private bool HasItem(GridPoint slotPosition)
         {
             return _gameBoard[slotPosition].Item != null;
-        }
-        public void DebugWrite(string s)
-        {
-            Debug.LogError(s);
         }
     }
 }

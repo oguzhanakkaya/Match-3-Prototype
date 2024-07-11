@@ -12,24 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fe248e0e9b064ce9a3edb273d33aefe, type: 3}
   m_Name: GameData
   m_EditorClassIdentifier: 
-  spriteDatas:
-  - itemType: 0
-    sprite: {fileID: 21300000, guid: fde1699e78e049c4da0a94494bab006f, type: 3}
+  particleColorData:
+  - prefabId: item_blue
     particleColor:
       serializedVersion: 2
-      rgba: 4292842537
-  - itemType: 1
-    sprite: {fileID: 21300000, guid: 0dceca058888ba848afb7170729def89, type: 3}
+      rgba: 4294377487
+  - prefabId: item_green
     particleColor:
       serializedVersion: 2
-      rgba: 4278631234
-  - itemType: 2
-    sprite: {fileID: 21300000, guid: e4e546b07d9689144826f072fe382a5d, type: 3}
+      rgba: 4281401088
+  - prefabId: item_red
     particleColor:
       serializedVersion: 2
-      rgba: 4278980325
-  - itemType: 3
-    sprite: {fileID: 21300000, guid: e226e2b382e90474db257047765d07d2, type: 3}
+      rgba: 4280025343
+  - prefabId: item_yellow
     particleColor:
       serializedVersion: 2
-      rgba: 4278245106
+      rgba: 4281925631

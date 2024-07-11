@@ -5,7 +5,7 @@ namespace Game.Scripts.Core.Interfaces
 {
     public interface IItem
     {
-        int ItemType { get; }
+        string PrefabId { get; }
         bool IsUsableItem { get; }
 
         Transform Transform { get; }
@@ -13,12 +13,11 @@ namespace Game.Scripts.Core.Interfaces
 
         void Show();
         void Hide();
+        void SetItem();
 
-        void SetItem(Sprite sprite,int itemType);
         void SetPosition(Vector3 position);
-        Vector3 GetPosition();
         void SetScale(float value);
-
+        Vector3 GetPosition();
         UniTask Use();
     }
 }

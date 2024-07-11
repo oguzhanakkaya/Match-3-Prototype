@@ -5,50 +5,58 @@ using Game.Scripts.Core;
 using Match3System.Core.Interfaces;
 using Match3System.Core.Models;
 using Lean.Pool;
-using System.Threading;
 
-public static class GridOperations
+public class GridOperations
 {
     private const float SwapDuration = .2f;
-    public static async UniTask ClearSequence(GameBoard gameBoard, GameController gameController,LevelController levelController)
+
+    private readonly LevelController _levelController;
+    private readonly GameController _gameController;
+    private readonly GameBoard _gameBoard;
+    public GridOperations(SceneContext sceneContext)
     {
-        var matches = MatchSolver.GetMatches(gameBoard, GetLineDetectors());
+        _levelController = sceneContext.Resolve<LevelController>();
+        _gameController = sceneContext.Resolve<GameController>();
+        _gameBoard = _levelController._gameBoard;
+    }
+    public async UniTask ClearSequence()
+    {
+        var matches = MatchSolver.GetMatches(_gameBoard, GetLineDetectors());
 
         if (matches.Count > 0)
         {
-            await ClearMatchedItem(matches, gameBoard,gameController,levelController);
-            await ClearSequence(gameBoard, gameController,levelController);
+            await ClearMatchedItem(matches);
+            await ClearSequence();
         }
     }
-    public static async UniTask SwapItemsAsync(GridPoint position1, GridPoint position2, 
-        GameBoard gameBoard, GameController gameController,LevelController levelController)
+    public async UniTask SwapItemsAsync(GridPoint position1, GridPoint position2)
     {
-        await SwapGameBoardItemsAsync(position1, position2, gameBoard);
+        await SwapGameBoardItemsAsync(position1, position2);
 
-        var item1Usable = gameBoard[position1].Item.IsUsableItem;
-        var item2Usable = gameBoard[position2].Item.IsUsableItem;
+        var item1Usable = _gameBoard[position1].Item.IsUsableItem;
+        var item2Usable = _gameBoard[position2].Item.IsUsableItem;
 
         if (item1Usable || item2Usable)
         {
-            await gameBoard[position1].Item.Use();
-            await gameBoard[position2].Item.Use();
-            await ClearSequence(gameBoard, gameController, levelController);
+            await _gameBoard[position1].Item.Use();
+            await _gameBoard[position2].Item.Use();
+            await ClearSequence();
         }
-        else if (MatchSolver.GetMatches(gameBoard, GetLineDetectors()).Count > 0)
+        else if (MatchSolver.GetMatches(_gameBoard, GetLineDetectors()).Count > 0)
         {
-            await ClearSequence(gameBoard, gameController, levelController);
+            await ClearSequence();
         }
         else
-            await SwapGameBoardItemsAsync(position1, position2, gameBoard);
+            await SwapGameBoardItemsAsync(position1, position2);
     }
-    private static async UniTask SwapGameBoardItemsAsync(GridPoint position1, GridPoint position2, GameBoard gameBoard)
+    private async UniTask SwapGameBoardItemsAsync(GridPoint position1, GridPoint position2)
     {
-        var gridSlot1 = gameBoard[position1];
-        var gridSlot2 = gameBoard[position2];
+        var gridSlot1 = _gameBoard[position1];
+        var gridSlot2 = _gameBoard[position2];
 
         await StartSwapItemsAnim(gridSlot1, gridSlot2);
     }
-    private static async UniTask StartSwapItemsAnim(IGridNode gridSlot1, IGridNode gridSlot2)
+    private async UniTask StartSwapItemsAnim(IGridNode gridSlot1, IGridNode gridSlot2)
     {
         var item1 = gridSlot1.Item;
         var item2 = gridSlot2.Item;
@@ -69,8 +77,7 @@ public static class GridOperations
         gridSlot1.SetItem(item2);
         gridSlot2.SetItem(item1);
     }
-    public static async UniTask ClearMatchedItem(List<MatchedItems<IGridNode>> matchedItemsList,GameBoard _gameBoard, 
-        GameController gameController,LevelController levelController)
+    public async UniTask ClearMatchedItem(List<MatchedItems<IGridNode>> matchedItemsList)
     {
         Jobs jobs = new Jobs();
         foreach (var item in matchedItemsList)
@@ -78,24 +85,25 @@ public static class GridOperations
             // You can create a special item (Rocket etc.) by checking at the number of items listed here.
             foreach (var item2 in item.itemsList)
             {
-                ClearTile(_gameBoard[item2], gameController);
-                jobs.Add(levelController._gridFiller.FillSequence(item2.ColumnIndex));
+                ClearTile(_gameBoard[item2]);
+                jobs.Add(_levelController._gridFiller.FillSequence(item2.ColumnIndex));
             }
            
         }
         await jobs.ExecuteJob();
     }
-    private static void ClearTile(IGridNode grid, GameController gameController)
+    private void ClearTile(IGridNode grid)
     {
         if (grid.Item == null)
             return;
 
-        gameController.StartParticle(grid);
-        gameController.DecreaseItemDestroyCount();
+        _levelController.StartParticle(grid);
+        _gameController.DecreaseItemDestroyCount();
 
         LeanPool.Despawn((UnityEngine.Component)grid.Item);
         grid.Item.Hide();
         grid.Clear();
+
     }
     private static List<LineDetectors> GetLineDetectors()
     {

@@ -5,6 +5,8 @@ using UnityEngine;
 using PoolSystem.Core;
 using Match3System.Core.Models;
 using Match3System.Core.Interfaces;
+using System.Linq;
+using UnityEngine.Playables;
 
 public class LevelController : MonoBehaviour
 {
@@ -20,9 +22,11 @@ public class LevelController : MonoBehaviour
     private PoolManager _poolManager;
     private EventBus    _eventBus;
 
-    public LevelData    levelData;
-    public GameBoard    _gameBoard;
-    public GridFiller   _gridFiller;
+    public LevelData        _levelData;
+    public GameData         _gameData;
+    public GameBoard        _gameBoard;
+    public GridFiller       _gridFiller;
+    public GridOperations   _gridOperarations;
 
     public async void Init()
     {
@@ -35,23 +39,25 @@ public class LevelController : MonoBehaviour
     {
         LeanPool.DespawnAll();
 
-        _rowCount = levelData.rowIndex;
-        _columnCount = levelData.columnIndex;
+        _rowCount = _levelData.rowIndex;
+        _columnCount = _levelData.columnIndex;
 
         CreateGridTiles(null);
 
         _gameBoard = new GameBoard();
         _gameBoard.SetGridSlots(_gameBoardNodes, GetOriginPosition(_rowCount, _columnCount), _tileSize);
 
-        _gridFiller = new GridFiller(_sceneContext, levelData);
+        _gridOperarations = new GridOperations(_sceneContext);
+
+        _gridFiller = new GridFiller(_sceneContext, _levelData);
         _gridFiller.GenerateToAllBoard();
 
         SetGridFrame();
         SetCamera();
 
-        _eventBus.Fire(new GameEvents.OnLevelLoaded(levelData.moveCount, levelData.destroyItemCount));
+        _eventBus.Fire(new GameEvents.OnLevelLoaded(_levelData.moveCount, _levelData.destroyItemCount));
 
-        await GridOperations.ClearSequence(_gameBoard, _gameController, this);
+        await _gridOperarations.ClearSequence();
     }
     public IGridNode[,] GetGameBoardNodes()
     {
@@ -110,5 +116,13 @@ public class LevelController : MonoBehaviour
         var pos2 = GetWorldPosition(_rowCount - 1, 0) + GetWorldPosition(_rowCount - 1, _columnCount - 1);
 
         return new Vector3(pos2.x * .5f, pos1.y * .5f, 0);
+    }
+    public void StartParticle(IGridNode grid)
+    {
+        var obj=_poolManager._poolDataList.First(x => x.PrefabId == "particle_object").Prefab;
+        LeanPool.Spawn(obj);
+
+        ((ParticleObject)obj).StartParticle(_gameData.GetParticleColorFromItemType(grid.Item.PrefabId), grid.Item.GetPosition()); ;
+
     }
 }

@@ -9,11 +9,9 @@ namespace Game.Scripts.Core
     {
         [SerializeField] private string _prefabId;
         [SerializeField] private SpriteRenderer _spriteRenderer;
-        [SerializeField] private int itemType;
         [SerializeField] private bool isUsableItem;
         public IPool<ItemBase> Pool { get; private set; }
         public bool IsUsableItem => isUsableItem;
-        public int ItemType => itemType;
         public Transform Transform => transform;
         public SpriteRenderer SpriteRenderer => _spriteRenderer;
         public string PrefabId => _prefabId;
@@ -29,10 +27,8 @@ namespace Game.Scripts.Core
             gameObject.SetActive(false);
         }
 
-        public void SetItem(Sprite sprite, int type)
+        public void SetItem()
         {
-            itemType = type;
-            _spriteRenderer.sprite = sprite;
         }
 
         public void SetPosition(Vector3 position)
