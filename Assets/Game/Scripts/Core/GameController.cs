@@ -79,12 +79,14 @@ namespace Game.Scripts.Core
         }
         private async void OnPointerUp(GameEvents.OnPointerUp pointer)
         {
-            if (_gameBoard.IsPointerOnGrid(pointer.point.WorldPosition, out GridPoint point))
-                if (IsSameSlot(point) || !IsDiagonalSlot(point) || !HasItem(point) || isLevelEnded)
-                    return;
-                
-                DecreaseMoveCount();
-                await levelController._gridOperarations.SwapItemsAsync(firstGridPoint, point);        
+            if (!_gameBoard.IsPointerOnGrid(pointer.point.WorldPosition, out GridPoint point))
+                return;
+
+            if (IsSameSlot(point) || !IsDiagonalSlot(point) || !HasItem(point) || isLevelEnded)
+                return;
+
+            DecreaseMoveCount();
+            await levelController._gridOperarations.SwapItemsAsync(firstGridPoint, point);
         }
         private bool IsSameSlot(GridPoint slotPosition)
         {
