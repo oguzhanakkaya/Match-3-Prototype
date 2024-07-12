@@ -4,11 +4,9 @@ using Game.Scripts.Core.Interfaces;
 using Lean.Pool;
 using Match3System.Core.Interfaces;
 using Match3System.Core.Models;
-using PoolSystem.Core;
 using UnityEngine;
 public class GridFiller
 {
-    private readonly PoolManager        _poolManager;
     private readonly LevelController    _levelController;
     private readonly LevelData          _levelData;
     private readonly GameBoard          _gameBoard;
@@ -18,7 +16,6 @@ public class GridFiller
     private int RowCount,ColumnCount;
     public GridFiller(SceneContext sceneContext,LevelData levelData)
     {
-        _poolManager = sceneContext.Resolve<PoolManager>();
         _levelController = sceneContext.Resolve<LevelController>();
         _levelData = levelData;
         _gridNode = _levelController.GetGameBoardNodes();

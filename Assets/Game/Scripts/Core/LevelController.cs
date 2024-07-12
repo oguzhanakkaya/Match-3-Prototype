@@ -13,12 +13,12 @@ public class LevelController : MonoBehaviour
     [SerializeField] private Camera         _mainCamera;
     [SerializeField] private GameController _gameController;
 
-    private float       _tileSize = 1f;
-    private int         _rowCount, _columnCount;
-    private Vector3     _originPosition;
-    private GridNode[,] _gameBoardNodes;
-    private PoolManager _poolManager;
-    private EventBus    _eventBus;
+    private float           _tileSize = 1f;
+    private int             _rowCount, _columnCount;
+    private Vector3         _originPosition;
+    private GridNode[,]     _gameBoardNodes;
+    private PoolManager     _poolManager;
+    private EventBus        _eventBus;
 
     public Transform        _boardTransform;
     public LevelData        _levelData;
